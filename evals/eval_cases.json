@@ -1,0 +1,166 @@
+[
+  {
+    "case_id": "case_001",
+    "query": "商品 P1001 最近 GMV 为什么下降？",
+    "expected_intent": "business_diagnosis",
+    "expected_tools": ["metrics_tool", "rag_tool"],
+    "expected_keywords": ["GMV", "退款率", "点击率", "优化建议"],
+    "expected_evidence_sources": ["campaign_rules.md", "after_sales_policy.md"],
+    "expected_entity_ids": ["P1001"],
+    "expected_tool_result_keys": ["period_comparison", "current_channel_breakdown"],
+    "expected_trace_fields": ["trace_id", "node_spans", "final_answer"]
+  },
+  {
+    "case_id": "case_002",
+    "query": "P1001 4 月退款率为什么异常升高？",
+    "expected_intent": "refund_analysis",
+    "expected_tools": ["metrics_tool", "rag_tool"],
+    "expected_keywords": ["退款率", "差评", "物流", "优化建议"],
+    "expected_evidence_sources": ["after_sales_policy.md", "review_analysis_guide.md"],
+    "expected_entity_ids": ["P1001"],
+    "expected_tool_result_keys": ["current_refund", "baseline_refund"]
+  },
+  {
+    "case_id": "case_003",
+    "query": "P1001 search 渠道点击率下降是什么原因？",
+    "expected_intent": "traffic_analysis",
+    "expected_tools": ["metrics_tool", "rag_tool"],
+    "expected_keywords": ["点击率", "search", "主图", "优化建议"],
+    "expected_evidence_sources": ["product_operation_guide.md"],
+    "expected_entity_ids": ["P1001"],
+    "expected_tool_result_keys": ["current_traffic", "current_channel_breakdown"]
+  },
+  {
+    "case_id": "case_004",
+    "query": "商品 P1002 4 月经营表现如何？",
+    "expected_intent": "business_diagnosis",
+    "expected_tools": ["metrics_tool", "rag_tool"],
+    "expected_keywords": ["GMV", "转化率", "退款率", "优化建议"],
+    "expected_evidence_sources": ["product_operation_guide.md"],
+    "expected_entity_ids": ["P1002"],
+    "expected_tool_result_keys": ["period_comparison", "current_gmv"]
+  },
+  {
+    "case_id": "case_005",
+    "query": "P1001 没有充分参加平台活动会怎样影响价格竞争力和 GMV？",
+    "expected_intent": "business_diagnosis",
+    "expected_tools": ["metrics_tool", "rag_tool"],
+    "expected_keywords": ["活动", "价格竞争力", "GMV", "优化建议"],
+    "expected_evidence_sources": ["campaign_rules.md"],
+    "expected_entity_ids": ["P1001"],
+    "expected_tool_result_keys": ["period_comparison", "rag_search"]
+  },
+  {
+    "case_id": "case_006",
+    "query": "P1001 四月差评高频问题有哪些，是否和续航、物流、佩戴体验有关？",
+    "expected_intent": "review_analysis",
+    "expected_tools": ["rag_tool"],
+    "expected_keywords": ["差评", "续航", "物流", "佩戴"],
+    "expected_evidence_sources": ["review_analysis_guide.md", "after_sales_policy.md"],
+    "expected_entity_ids": ["P1001"],
+    "expected_tool_result_keys": ["rag_search"]
+  },
+  {
+    "case_id": "case_007",
+    "query": "P1001 转化率下降应该从哪些维度分析？",
+    "expected_intent": "traffic_analysis",
+    "expected_tools": ["metrics_tool", "rag_tool"],
+    "expected_keywords": ["转化率", "CVR", "详情页", "优化建议"],
+    "expected_evidence_sources": ["product_operation_guide.md", "review_analysis_guide.md"],
+    "expected_entity_ids": ["P1001"],
+    "expected_tool_result_keys": ["current_traffic", "baseline_traffic"]
+  },
+  {
+    "case_id": "case_008",
+    "query": "商品 P9999 最近 GMV 为什么下降？",
+    "expected_intent": "business_diagnosis",
+    "expected_tools": ["metrics_tool", "rag_tool"],
+    "expected_keywords": ["GMV", "trace_id", "证据来源", "数据分析失败原因"],
+    "expected_evidence_sources": ["campaign_rules.md", "product_operation_guide.md"],
+    "expected_entity_ids": ["P9999"],
+    "expected_tool_result_keys": ["product_basic_info", "rag_search"],
+    "expected_error_nodes": ["metrics_tool_node"]
+  },
+  {
+    "case_id": "case_009",
+    "query": "请对比 P1001 和 P1002 四月 GMV 表现，判断 P1001 是否异常",
+    "expected_intent": "business_diagnosis",
+    "expected_tools": ["metrics_tool", "rag_tool"],
+    "expected_keywords": ["P1002", "GMV", "变化率", "优化建议"],
+    "expected_evidence_sources": ["campaign_rules.md", "product_operation_guide.md"],
+    "expected_entity_ids": ["P1001", "P1002"],
+    "expected_tool_result_keys": ["peer_period_comparisons", "period_comparison"]
+  },
+  {
+    "case_id": "case_010",
+    "query": "无线蓝牙耳机 Pro 最近 GMV 下滑和退款率升高是否有关？",
+    "expected_intent": "business_diagnosis",
+    "expected_tools": ["metrics_tool", "rag_tool"],
+    "expected_keywords": ["P1001", "GMV", "退款率", "优化建议"],
+    "expected_evidence_sources": ["after_sales_policy.md", "review_analysis_guide.md"],
+    "expected_entity_ids": ["P1001"],
+    "expected_tool_result_keys": ["period_comparison", "current_refund"]
+  },
+  {
+    "case_id": "case_011",
+    "query": "P1001 从三月上旬到四月下旬经营异常，应该先看哪些指标？",
+    "expected_intent": "business_diagnosis",
+    "expected_tools": ["metrics_tool", "rag_tool"],
+    "expected_keywords": ["GMV", "点击率", "转化率", "退款率"],
+    "expected_evidence_sources": ["product_operation_guide.md", "after_sales_policy.md"],
+    "expected_entity_ids": ["P1001"],
+    "expected_tool_result_keys": ["period_comparison"],
+    "expected_trace_fields": ["time_range", "node_spans"]
+  },
+  {
+    "case_id": "case_012",
+    "query": "海外仓新品 ZX999 的评分波动是否有足够证据可以下结论？",
+    "expected_intent": "unknown",
+    "expected_tools": ["rag_tool"],
+    "expected_keywords": ["证据来源", "优化建议"],
+    "expected_evidence_sources": [],
+    "forbidden_keywords": ["明确证明", "必然导致"]
+  },
+  {
+    "case_id": "case_013",
+    "query": "运营说 P1001 参加了活动，但数据又显示活动参与不足，这种证据冲突下 GMV 下滑怎么判断？",
+    "expected_intent": "business_diagnosis",
+    "expected_tools": ["metrics_tool", "rag_tool"],
+    "expected_keywords": ["证据冲突", "待确认", "GMV", "活动"],
+    "expected_evidence_sources": ["campaign_rules.md"],
+    "expected_entity_ids": ["P1001"],
+    "expected_tool_result_keys": ["period_comparison", "rag_search"],
+    "forbidden_keywords": ["已经完全确认", "唯一原因"]
+  },
+  {
+    "case_id": "case_014",
+    "query": "最近 GMV 下滑但没有提供商品 ID，指标缺失时 Agent 应该怎么处理？",
+    "expected_intent": "business_diagnosis",
+    "expected_tools": ["rag_tool"],
+    "expected_keywords": ["数据分析失败原因", "证据来源", "优化建议"],
+    "expected_evidence_sources": ["campaign_rules.md", "product_operation_guide.md"],
+    "expected_error_nodes": ["metrics_tool_node"],
+    "forbidden_keywords": ["P1001"]
+  },
+  {
+    "case_id": "case_015",
+    "query": "P1001 最近一段时间 GMV、退款率、点击率一起异常，和 P1002 相比哪个更值得优先处理？",
+    "expected_intent": "business_diagnosis",
+    "expected_tools": ["metrics_tool", "rag_tool"],
+    "expected_keywords": ["P1002", "GMV", "退款率", "点击率", "优化建议"],
+    "expected_evidence_sources": ["after_sales_policy.md", "product_operation_guide.md"],
+    "expected_entity_ids": ["P1001", "P1002"],
+    "expected_tool_result_keys": ["period_comparison", "peer_period_comparisons"],
+    "expected_trace_fields": ["time_range", "node_spans"]
+  },
+  {
+    "case_id": "case_016",
+    "query": "P1001 的数据缺口很大，只知道最近波动明显，能不能直接下结论？",
+    "expected_intent": "unknown",
+    "expected_tools": ["rag_tool"],
+    "expected_keywords": ["证据来源", "优化建议"],
+    "expected_evidence_sources": [],
+    "expected_entity_ids": ["P1001"],
+    "forbidden_keywords": ["直接下结论", "已经完全确认"]
+  }
+]

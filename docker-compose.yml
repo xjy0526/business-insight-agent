@@ -1,0 +1,28 @@
+services:
+  business-insight-agent:
+    build: .
+    container_name: business-insight-agent
+    env_file:
+      - .env.example
+    environment:
+      CACHE_BACKEND: ${CACHE_BACKEND:-memory}
+      REDIS_URL: ${REDIS_URL:-}
+      RAG_BACKEND: ${RAG_BACKEND:-tfidf}
+    ports:
+      - "8000:8000"
+
+  redis:
+    image: redis:7-alpine
+    container_name: business-insight-redis
+    profiles:
+      - integration
+    ports:
+      - "6379:6379"
+
+  chroma:
+    image: chromadb/chroma:0.5.23
+    container_name: business-insight-chroma
+    profiles:
+      - integration
+    ports:
+      - "8001:8000"

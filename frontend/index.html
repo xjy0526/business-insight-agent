@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>BusinessInsight Agent</title>
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body>
+    <main class="page-shell">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">Ecommerce Attribution Agent</p>
+          <h1>BusinessInsight Agent</h1>
+          <p class="subtitle">面向电商经营场景的智能归因与决策 Agent</p>
+        </div>
+        <div class="status-pill">
+          <span class="status-dot"></span>
+          Local Demo
+        </div>
+      </header>
+
+      <section class="workspace" aria-label="Agent demo workspace">
+        <section class="panel input-panel" aria-labelledby="input-title">
+          <div class="panel-heading">
+            <h2 id="input-title">业务问题</h2>
+            <span>Natural language query</span>
+          </div>
+
+          <label class="field-label" for="query-input">输入经营分析问题</label>
+          <textarea id="query-input" rows="8">商品 P1001 最近 GMV 为什么下降？</textarea>
+
+          <button id="analyze-button" class="primary-button" type="button">
+            开始分析
+          </button>
+
+          <div class="examples" aria-label="示例问题">
+            <button type="button" class="example-button">商品 P1001 最近 GMV 为什么下降？</button>
+            <button type="button" class="example-button">P1001 的退款率最近是不是异常？</button>
+            <button type="button" class="example-button">P1001 搜索渠道点击率为什么下降？</button>
+            <button type="button" class="example-button">商品 P1001 差评集中在哪些问题？</button>
+          </div>
+        </section>
+
+        <section class="panel result-panel" aria-labelledby="result-title">
+          <div class="panel-heading">
+            <h2 id="result-title">诊断报告</h2>
+            <span id="run-status">Ready</span>
+          </div>
+
+          <div class="meta-grid">
+            <div>
+              <span>trace_id</span>
+              <strong id="trace-id">-</strong>
+            </div>
+            <div>
+              <span>latency_ms</span>
+              <strong id="latency">-</strong>
+            </div>
+          </div>
+
+          <article id="answer" class="answer empty-state">
+            输入问题后点击“开始分析”，这里会展示结构化经营诊断报告。
+          </article>
+        </section>
+      </section>
+
+      <section class="debug-panel" aria-label="调试信息">
+        <details>
+          <summary>tool_results</summary>
+          <pre id="tool-results">{}</pre>
+        </details>
+        <details>
+          <summary>retrieved_docs</summary>
+          <pre id="retrieved-docs">[]</pre>
+        </details>
+      </section>
+    </main>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>
