@@ -135,3 +135,10 @@ class EvalRunRequest(BaseModel):
         default=None,
         description="Optional avg_score threshold for full_agent.",
     )
+
+
+class ProductAdToolResponse(BaseModel):
+    """Generic response model for deterministic product-ad tool endpoints."""
+
+    ok: bool = Field(description="Whether the product-ad tool call succeeded.")
+    result: dict[str, Any] = Field(description="Raw product-ad tool payload.")

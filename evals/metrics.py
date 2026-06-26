@@ -313,8 +313,18 @@ def check_sku_recall_fields(agent_result: dict[str, Any], eval_case: dict[str, A
         "recall_path" in combined,
         "recall_score" in combined,
         "matched_terms" in combined,
-        any(path in combined for path in ("keyword_inverted", "query_expansion", "vector_match")),
-        "多路召回" in combined or "keyword_inverted" in combined,
+        any(
+            path in combined
+            for path in (
+                "keyword_inverted",
+                "query_expansion",
+                "vector_match",
+                "tfidf_vector_fallback",
+            )
+        ),
+        "多路召回" in combined
+        or "keyword_inverted" in combined
+        or "tfidf_vector_fallback" in combined,
     ]
     return round(sum(1 for passed in checks if passed) / len(checks), 6)
 
@@ -380,6 +390,98 @@ def check_root_cause_or_recommendation_hit(
     return round(matched / len(expected), 6)
 
 
+def _product_ad_payload(agent_result: dict[str, Any]) -> dict[str, Any]:
+    """Return product_ad payload from an agent result."""
+
+    tool_results = agent_result.get("tool_results", {})
+    payload = tool_results.get("product_ad") or agent_result.get("ad_results", {})
+    return payload if isinstance(payload, dict) else {}
+
+
+def _bid_range_payload(agent_result: dict[str, Any]) -> dict[str, Any]:
+    """Return bid_range payload for bid recommendation cases."""
+
+    product_ad = _product_ad_payload(agent_result)
+    bid_range = product_ad.get("bid_range", {})
+    return bid_range if isinstance(bid_range, dict) else {}
+
+
+def check_numeric_bid_correctness(
+    agent_result: dict[str, Any],
+    eval_case: dict[str, Any],
+) -> float:
+    """Verify CPC formulas from product_ad bid_range output."""
+
+    if eval_case.get("expected_intent") != "bid_recommendation":
+        return 1.0
+
+    bid_range = _bid_range_payload(agent_result)
+    if not bid_range.get("ok"):
+        return 1.0 if bid_range.get("error") else 0.5
+    required = ["pcvr", "price", "target_roi", "max_cpc_by_revenue_roi", "max_cpc_by_profit_roi"]
+    if any(key not in bid_range for key in required):
+        return 0.0
+
+    pcvr = float(bid_range["pcvr"])
+    price = float(bid_range["price"])
+    target_roi = float(bid_range["target_roi"])
+    margin_rate = float(bid_range.get("margin_rate", 0.28))
+    expected_revenue_cpc = pcvr * price / target_roi
+    expected_profit_cpc = pcvr * price * margin_rate / target_roi
+    revenue_ok = abs(float(bid_range["max_cpc_by_revenue_roi"]) - expected_revenue_cpc) <= 0.05
+    profit_ok = abs(float(bid_range["max_cpc_by_profit_roi"]) - expected_profit_cpc) <= 0.05
+    return 1.0 if revenue_ok and profit_ok else 0.0
+
+
+def check_no_default_entity_leakage(
+    agent_result: dict[str, Any],
+    eval_case: dict[str, Any],
+) -> float:
+    """Penalize strong default P1001/M001 recommendations when no entity was provided."""
+
+    query = eval_case.get("query", "")
+    has_explicit_entity = any(
+        marker in query.upper() for marker in ("P1001", "P9999", "M001", "M999")
+    )
+    if has_explicit_entity:
+        return 1.0
+
+    answer = _answer_text(agent_result)
+    if any(term in answer for term in ("需要补充", "问题不明确", "无法排序")):
+        return 1.0
+    leaked = any(entity in answer for entity in ("P1001", "M001"))
+    return 0.0 if leaked else 1.0
+
+
+def check_hard_case_uncertainty(
+    agent_result: dict[str, Any],
+    eval_case: dict[str, Any],
+) -> float:
+    """Check uncertainty language for hard cases."""
+
+    case_id = str(eval_case.get("case_id", ""))
+    if not case_id.startswith("hard_"):
+        return 1.0
+
+    combined = _combined_result_text(agent_result)
+    uncertainty_terms = (
+        "无法计算",
+        "证据不足",
+        "需要补充",
+        "谨慎",
+        "风险",
+        "不建议盲目",
+        "未命中",
+        "不确定",
+        "fallback",
+        "不能直接下结论",
+    )
+    strong_terms = ("一定安全", "保证提升", "一定能提升", "全部强匹配", "必然提升")
+    if any(term in combined for term in strong_terms):
+        return 0.0
+    return 1.0 if any(term in combined for term in uncertainty_terms) else 0.0
+
+
 def calculate_case_score(agent_result: dict[str, Any], eval_case: dict[str, Any]) -> dict[str, Any]:
     """Calculate component metrics and weighted score for one eval case."""
 
@@ -403,20 +505,28 @@ def calculate_case_score(agent_result: dict[str, Any], eval_case: dict[str, Any]
         agent_result,
         eval_case,
     )
+    numeric_bid_correctness = check_numeric_bid_correctness(agent_result, eval_case)
+    no_default_entity_leakage = check_no_default_entity_leakage(agent_result, eval_case)
+    hard_case_uncertainty = check_hard_case_uncertainty(agent_result, eval_case)
     score = (
         intent_accuracy * 0.15
-        + keyword_coverage * 0.12
-        + tool_usage * 0.12
-        + evidence_hit * 0.10
-        + entity_coverage * 0.08
-        + tool_result_key_coverage * 0.08
-        + ad_recommendation_fields * 0.10
+        + keyword_coverage * 0.09
+        + tool_usage * 0.10
+        + evidence_hit * 0.08
+        + entity_coverage * 0.06
+        + tool_result_key_coverage * 0.07
+        + ad_recommendation_fields * 0.08
         + bid_guardrail * 0.08
-        + sku_recall_fields * 0.08
-        + poi_vs_product_comparison * 0.04
-        + claim_evidence_alignment * 0.03
-        + forbidden_keyword_pass * 0.02
+        + sku_recall_fields * 0.07
+        + poi_vs_product_comparison * 0.03
+        + claim_evidence_alignment * 0.05
+        + numeric_bid_correctness * 0.07
+        + no_default_entity_leakage * 0.04
+        + hard_case_uncertainty * 0.04
+        + forbidden_keyword_pass * 0.04
     )
+
+    capped_score = min(max(score, 0.0), 1.0)
 
     return {
         "intent_accuracy": intent_accuracy,
@@ -436,5 +546,8 @@ def calculate_case_score(agent_result: dict[str, Any], eval_case: dict[str, Any]
         "poi_vs_product_comparison": poi_vs_product_comparison,
         "claim_evidence_alignment": claim_evidence_alignment,
         "root_cause_or_recommendation_hit": root_cause_or_recommendation_hit,
-        "score": round(score, 6),
+        "numeric_bid_correctness": numeric_bid_correctness,
+        "no_default_entity_leakage": no_default_entity_leakage,
+        "hard_case_uncertainty": hard_case_uncertainty,
+        "score": round(capped_score, 6),
     }

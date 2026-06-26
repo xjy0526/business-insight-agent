@@ -1,21 +1,31 @@
 # GitHub 提交说明
 
 - 本仓库为忻纪元本人课程设计 GitHub 项目提交。
-- 项目基于本人已有 business-insight-agent 仓库继续迭代。
-- 本次课程新增功能清单：商品级广告增长决策、主推品挖掘、Query-SKU 召回、ROI 出价守护、POI 级广告 vs 商品级广告对比、广告投放评测、课程 Notebook 和报告草稿。
-- 不含真实公司内部数据；所有新增数据均为 synthetic demo data。
-- 与原始项目差异：原项目聚焦经营归因，本版本在保留原能力基础上新增本地生活商户商品级广告决策链路。
-- 运行方式：
+- 项目基于本人已有 `business-insight-agent` 仓库继续迭代。
+- 当前提交分支：`course-design-product-ad-agent-hardening`。
+- 最新 hardening commit message：`fix(course): harden product ad agent evaluation and submission artifacts`。
+- 最新 eval case_count：44。
+- 最新 eval command：`python -m evals.run_eval --all-modes --fail-under 0.70`。
+- 最新 full_agent avg_score：0.999432。
+- threshold gate：enabled=true, pass=true。
 
-```bash
-python -m app.db.init_db
-pytest
-ruff check app evals tests
-python -m evals.run_eval
-python -m evals.run_ablation
-```
+## 本次 Hardening 新增内容
 
-- 提交分支：`course-design-product-ad-agent`
-- commit message：`feat(course): upgrade agent for product-level advertising decision support`
+- 修复 README、README_COURSE 和课程报告中的旧评测描述与占位内容。
+- 新增 Notebook 执行脚本，并保存 `notebooks/course_design_demo.ipynb` 执行输出。
+- 增强 Eval 可信度：hard cases、数值正确性、默认实体泄漏、不确定性表达、all-modes threshold gate。
+- 修复 ROI guardrail，使 `simulate_bid_strategy` 按用户 `target_roi` 判断 pass/watch/risk。
+- 修复 Query + merchant_id 场景下的 Query-SKU 融合排序，避免未召回商品混入直接召回排序。
+- 新增集中实体解析、TF-IDF deterministic recall fallback、数据一致性校验、Product Ad API 和前端 Product Ads tab。
+- 新增 `docs/data_card.md`、`docs/model_card.md`、`docs/llm_provider_optional.md`、Makefile 和 CI hardening。
 
-本仓库为忻纪元本人课程设计 GitHub 项目提交。项目基于本人已有 business-insight-agent 仓库继续迭代。本次课程新增商品级广告增长决策、主推品挖掘、Query-SKU 召回、ROI 出价守护、广告投放评测、课程 Notebook 和报告草稿。所有数据均为 synthetic demo data，不包含任何公司内部数据。
+## 课程提交材料
+
+课程提交时应提交：
+
+- GitHub 仓库链接。
+- 已执行并保存输出的 `notebooks/course_design_demo.ipynb`。
+- 课程报告 `docs/course_report.md`。
+- README / README_COURSE 中的运行命令和最新 evaluation 结果。
+
+本次 hardening commit 主要修复课程提交材料、Notebook 执行输出、Eval 可信度、ROI guardrail、Query-SKU 融合排序、实体解析、数据校验和文档一致性。该仓库为忻纪元本人课程设计 GitHub 项目提交，所有数据均为 synthetic demo data，不包含任何公司内部数据。

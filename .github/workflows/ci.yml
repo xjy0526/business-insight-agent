@@ -25,6 +25,12 @@ jobs:
       - name: Initialize database
         run: python -m app.db.init_db
 
+      - name: Validate synthetic demo data
+        run: python scripts/validate_demo_data.py
+
+      - name: Notebook smoke
+        run: python scripts/execute_notebook.py --smoke
+
       - name: Ruff
         run: ruff check app evals tests
 
@@ -35,7 +41,7 @@ jobs:
         run: pytest
 
       - name: Eval gate
-        run: python -m evals.run_eval --mode full_agent --fail-under 0.60
+        run: python -m evals.run_eval --all-modes --fail-under 0.70
 
       - name: Docker build
         run: docker build -t business-insight-agent:ci .

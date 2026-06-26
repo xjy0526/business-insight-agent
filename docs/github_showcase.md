@@ -9,7 +9,7 @@
 3. 调用 `/api/agent/analyze`，展示自然语言问题到结构化诊断报告。
 4. 展开 `tool_results`，重点看 `gmv_decomposition`、`review_analysis`、`campaign_participation`。
 5. 打开 `/api/traces/{trace_id}` 和 `/api/traces/stats`，说明可观测性。
-6. 运行 `python -m evals.run_eval --mode full_agent --fail-under 0.60`，展示 eval case 和阈值门禁。
+6. 运行 `python -m evals.run_eval --all-modes --fail-under 0.70`，展示 eval case 和阈值门禁。
 7. 运行 `python -m evals.run_eval --all-modes`，说明 RAG、Metrics、Review/Campaign、Reflection 和 mock/fallback 的组件贡献。
 
 ## 面试时可以强调的亮点
@@ -37,5 +37,5 @@ curl -X POST http://127.0.0.1:8000/api/agent/analyze \
   -d '{"query":"商品 P1001 最近 GMV 为什么下降？","use_cache":false}'
 
 curl http://127.0.0.1:8000/api/traces/stats?limit=20
-python -m evals.run_eval --mode full_agent --fail-under 0.60
+python -m evals.run_eval --all-modes --fail-under 0.70
 ```

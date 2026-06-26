@@ -1,79 +1,138 @@
-# 面向本地生活商户的商品级广告增长决策 Agent：基于 Tool Calling 与 RAG 的主推品挖掘、Query-SKU 召回与 ROI 守护
+# 面向本地生活商户的商品级广告增长决策 Agent
+
+基于 Tool Calling 与 RAG 的主推品挖掘、Query-SKU 召回与 ROI 守护。
 
 ## 1. 课程设计题目
 
-中文题目：面向本地生活商户的商品级广告增长决策 Agent：基于 Tool Calling 与 RAG 的主推品挖掘、Query-SKU 召回与 ROI 守护
+中文题目：面向本地生活商户的商品级广告增长决策 Agent：基于 Tool Calling 与 RAG 的主推品挖掘、Query-SKU 召回与 ROI 守护。
 
-英文题目：Product-level Advertising Growth Agent for Local Commerce Merchants: Tool-augmented RAG for SKU Mining, Query-SKU Recall and ROI Guardrails
+英文题目：Product-level Advertising Growth Agent for Local Commerce Merchants: Tool-augmented RAG for SKU Mining, Query-SKU Recall and ROI Guardrails.
+
+本仓库为忻纪元本人课程设计 GitHub 项目提交。项目基于已有 `business-insight-agent` 仓库继续迭代，所有新增数据均为 synthetic demo data，不包含任何公司内部数据、真实商户数据或敏感业务策略。
 
 ## 2. 研究背景
 
-本地生活平台广告中，传统 POI 级广告更适合承接泛需求流量，但难以精细化匹配用户的明确服务需求。商户往往希望围绕爆品、团购套餐、服务项目做商品级投放，例如皮肤管理、美甲、美发、健身私教、摄影和餐饮套餐。商品级广告需要同时解决“推什么商品”“用什么 Query 召回”“出价是否守住 ROI”三个问题。
+本地生活平台广告中，传统 POI 级广告更适合承接泛需求流量，但难以精细化匹配用户的明确服务需求。商户往往希望围绕爆品、团购套餐和服务项目做商品级投放，例如皮肤管理、美甲、美发、健身私教、摄影和餐饮套餐。
+
+商品级广告需要同时回答三个问题：推什么商品、用什么 Query 召回、出价是否守住 ROI。本项目将这些问题抽象为一个可观测、可回测、可答辩的 Agentic Product Ads Decision System。
 
 ## 3. 问题定义
 
-输入包括用户自然语言问题 query；商户、商品、订单、流量、广告实验、Query-SKU 召回等结构化数据；商品级广告策略知识库。
+输入包括用户自然语言 query、商户/商品/订单/流量/广告实验/Query-SKU 召回等结构化数据，以及本地 Markdown 策略知识库。
 
-输出包括主推品候选排序、出价区间、Query-SKU 召回解释、ROI 风险提示和结构化投放建议报告。
+输出包括主推品候选排序、出价区间、Query-SKU 召回解释、ROI 风险提示、证据对齐表和结构化投放建议报告。
 
 ## 4. 与数字经济/平台经济的关系
 
-该问题属于平台经济中的商户增长、广告匹配效率、搜索广告机制设计和数据驱动经营决策问题。平台通过更精细的商品级匹配提升搜索流量分发效率，商户通过可解释的主推品选择和 ROI 守护降低投放风险。
+该问题属于平台经济中的商户增长、广告匹配效率、搜索广告机制设计和数据驱动经营决策问题。平台通过更细粒度的商品级匹配提升搜索流量分发效率，商户通过可解释的主推品选择和 ROI 守护降低投放风险。
 
-## 5. 与本人美团实习经历的抽象对应关系
+## 5. 与实习抽象能力的对应关系
 
-- 商品级广告对应主推品挖掘。
-- PCVR、售价、历史 ROI 对应出价区间估计。
-- CVR + GMV 占比对应高价值商品筛选。
-- 关键词倒排、Query 扩展、向量匹配对应 Query-SKU 召回。
-- CTR、CVR、订单、ROI 对应实验评估指标。
+| 美团实习抽象能力 | 项目模块 |
+| --- | --- |
+| 主推品/爆品挖掘 | `mine_high_value_products`, Product Growth Score |
+| PCVR、售价、历史 ROI 的出价约束 | `recommend_bid_range`, `simulate_bid_strategy` |
+| CVR + GMV 占比的高价值商品筛选 | `local_ad_sku_candidates`, deterministic scorer |
+| 关键词倒排、Query 扩展、向量匹配 | `recall_query_to_sku`, TF-IDF fallback |
+| CTR、CVR、订单、ROI 实验评估 | `ad_bid_experiments`, `poi_level_ads_baseline` |
+| 工程化评测与可观测性 | `evals/`, `TraceService`, ablation suite |
 
-本项目不是复刻公司内部系统，而是对实习中通用方法的公开数据抽象实现，所有数据均为 synthetic demo data，不包含任何公司内部数据。项目仅可表述为 inspired by local commerce product-level advertising scenarios。
+本项目不是复刻任何公司内部系统，而是对本地生活商品级广告场景中通用方法的公开数据抽象实现。
 
 ## 6. 方法框架
 
-系统由 Intent Router、Planner、Metrics Tool、Product Ad Tool、RAG Retriever、Attribution / Recommendation Scorer、Reflection Checker、Final Report Generator、Trace & Eval 组成。经营归因问题走指标拆解与 RAG 证据链路，商品级广告问题走 product_ad_tool 的主推品评分、Query-SKU 召回、ROI 出价守护和 POI vs Product Ad 对比。
+系统由 Prompt Guard、Intent Router、Planner、Metrics Tool、Product Ad Tool、RAG Retriever、Recommendation Scorer、Reflection Checker、Final Report Generator、Trace 和 Eval 组成。
 
-## 7. 方法创新点
+经营归因问题走指标拆解与 RAG 证据链路；商品级广告问题走 `product_ad_tool` 的主推品评分、Query-SKU 召回、ROI 出价守护和 POI vs Product Ad 对比。
 
-- 将经营归因与商品级广告决策结合。
-- 设计商品增长分数 Product Growth Score。
-- 设计 ROI 约束下的 CPC/出价区间估计。
-- 设计 Query-SKU 多路召回与融合排序。
-- 设计证据约束型报告生成，降低大模型幻觉。
-- 设计自动化 Eval，对意图识别、工具调用、召回命中、ROI guardrail、证据一致性进行评估。
+## 7. 核心公式
 
-## 8. 数据说明
+### Product Growth Score
 
-所有新增数据均为 synthetic demo data，覆盖本地生活商户、团购套餐、服务项目、广告实验、Query-SKU 召回和 POI 级广告对比。不包含任何真实公司内部数据、真实商户数据或敏感业务信息。
+```text
+Product Growth Score =
+  0.25 * norm(CVR)
++ 0.25 * norm(GMV share)
++ 0.20 * norm(PCVR)
++ 0.15 * norm(historical ROI)
++ 0.05 * norm(available slots)
++ 0.05 * norm(rating)
++ 0.05 * norm(keyword coverage)
+- 0.15 * norm(refund rate)
+```
 
-## 9. 实验设计
+### max_cpc_by_revenue_roi
 
-baseline：原经营归因 Agent，只使用指标工具、RAG 和模板报告。
+```text
+expected_revenue_per_click = pcvr * price
+max_cpc_by_revenue_roi = expected_revenue_per_click / target_roi
+```
 
-ablation：比较 llm_or_template_only、metrics_only、product_ad_tools_only、rag_plus_metrics、full_product_ad_agent 五种模式。
+### max_cpc_by_profit_roi
 
-eval cases：保留原经营归因评测，并新增商品级广告、主推品挖掘、出价守护、Query-SKU 召回、POI vs Product Ad 对比和模糊问题 case。
+```text
+expected_profit_per_click = pcvr * price * margin_rate
+max_cpc_by_profit_roi = expected_profit_per_click / target_roi
+```
 
-指标体系：intent_accuracy、keyword_coverage、tool_usage、evidence_hit、entity_coverage、tool_result_key_coverage、ad_recommendation_fields、bid_guardrail、sku_recall_fields、poi_vs_product_comparison、claim_evidence_alignment、forbidden_keyword_pass。
+### final_score for Query-SKU ranking
 
-## 10. 如何运行
+```text
+final_score =
+  0.45 * product_growth_score
++ 0.35 * recall_score
++ 0.15 * roi_score
++ 0.05 * keyword_coverage_score
+- refund_risk_penalty
+- non_recall_penalty
+```
+
+## 8. 与相关工作对比
+
+- Insight Agents：更偏向电商卖家数据洞察、多 Agent 协作和 plan-and-execute 风格的经营分析。
+- ProductAgent：聚焦商品搜索中的需求澄清和动态检索，更接近搜索/推荐交互链路。
+- 本项目差异：聚焦本地生活商品级广告增长，把经营归因、主推品挖掘、ROI 守护、Query-SKU 召回和 Eval 统一到可观测 Agent Workflow 中。
+
+## 9. 数据说明
+
+所有新增数据均为 synthetic demo data，覆盖本地生活商户、团购套餐、服务项目、广告实验、Query-SKU 召回和 POI 级广告对比。不包含真实公司内部数据、真实商户数据或敏感业务信息。
+
+更多说明见 [docs/data_card.md](docs/data_card.md) 和 [docs/model_card.md](docs/model_card.md)。
+
+## 10. 实验设计
+
+Baseline：原经营归因 Agent，只使用指标工具、RAG 和模板报告。
+
+Ablation：比较 `llm_or_template_only`、`metrics_only`、`product_ad_tools_only`、`rag_plus_metrics`、`full_product_ad_agent` 五种模式。
+
+Eval cases：保留原经营归因评测，并新增商品级广告、主推品挖掘、出价守护、Query-SKU 召回、POI vs Product Ad 对比、prompt injection 和模糊问题 hard cases。
+
+指标体系包括 `intent_accuracy`、`keyword_coverage`、`tool_usage`、`evidence_hit`、`entity_coverage`、`tool_result_key_coverage`、`ad_recommendation_fields`、`bid_guardrail`、`sku_recall_fields`、`poi_vs_product_comparison`、`claim_evidence_alignment`、`numeric_bid_correctness`、`no_default_entity_leakage` 和 `hard_case_uncertainty`。
+
+## 11. 如何运行
 
 ```bash
 python -m app.db.init_db
-uvicorn app.main:app --reload
-python -m evals.run_eval
+python scripts/validate_demo_data.py
 pytest
+ruff check app evals tests
+python -m evals.run_eval --all-modes --fail-under 0.70
+python -m evals.run_ablation
+python scripts/execute_notebook.py
 ```
 
-可选运行消融实验：
+也可以运行课程检查：
 
 ```bash
-python -m evals.run_ablation
+make course-check
 ```
 
-## 11. GitHub 提交说明
+## 12. GitHub 提交说明
 
-这是忻纪元本人课程设计 GitHub 项目提交。
+课程提交时应提交 Notebook、课程报告和 GitHub 链接。Notebook 可通过以下命令执行并保存输出：
 
-本仓库为忻纪元本人课程设计 GitHub 项目提交。项目基于本人已有 business-insight-agent 仓库继续迭代。本次课程新增内容包括商品级广告增长决策、主推品挖掘、Query-SKU 召回、ROI 出价守护、广告投放评测、课程 Notebook 和报告草稿。所有数据均为 synthetic demo data，不包含任何公司内部数据。
+```bash
+python scripts/execute_notebook.py
+```
+
+本仓库为忻纪元本人课程设计 GitHub 项目提交。项目新增商品级广告增长决策、主推品挖掘、Query-SKU 召回、ROI 出价守护、广告投放评测、课程 Notebook 和报告草稿。所有数据均为 synthetic demo data，不包含任何公司内部数据。

@@ -2,6 +2,7 @@ import { Pill } from "./ui.jsx";
 
 const navItems = [
   { key: "dashboard", label: "Dashboard" },
+  { key: "productAds", label: "Product Ads" },
   { key: "chat", label: "AI Chat" },
   { key: "report", label: "Weekly Report" },
 ];
@@ -14,6 +15,10 @@ const pageCopy = {
   chat: {
     title: "AI Chat Assistant",
     subtitle: "Natural-language analysis with structured results and agent trace",
+  },
+  productAds: {
+    title: "Product Ads",
+    subtitle: "SKU mining, Query-SKU recall, ROI guardrails and evidence trace",
   },
   report: {
     title: "Weekly Report",
@@ -65,8 +70,7 @@ export default function AppShell({ activePage, onPageChange, children }) {
         <div className="mt-auto rounded-lg border border-slate-800 bg-slate-900 p-5">
           <div className="text-sm font-bold text-white">AI Agent Status</div>
           <p className="mt-3 text-xs font-medium leading-5 text-slate-400">
-            6 tools ready: metrics, orders, products, channels, anomaly and
-            report.
+            Tools ready: metrics, product ads, RAG, reflection, trace and eval.
           </p>
           <Pill className="mt-5" tone="green">
             Live

@@ -257,11 +257,24 @@ class ReportService:
         mining = product_ad.get("sku_mining", {})
         ranked = product_ad.get("ranked_candidates", {})
         candidates = mining.get("candidates") or ranked.get("ranked_candidates", [])
-        if product_ad.get("error"):
-            error_message = product_ad["error"].get("message", "需要补充商户或商品信息。")
+        if product_ad.get("error") or mining.get("ok") is False or ranked.get("ok") is False:
+            error_record = (
+                product_ad.get("error")
+                or mining.get("error", {})
+                or ranked.get("error", {})
+            )
+            error_message = error_record.get(
+                "message",
+                "未找到商户ID或商品ID，无法排序，需要补充有效信息。",
+            )
             return (
                 f"## 问题概述\n用户问题关注“{state.safe_user_query or state.user_query}”。"
                 f"{error_message}\n\n"
+                "## 证据对齐表\n"
+                "| 结论 | 支撑来源 | 证据字段 | 不确定性 |\n"
+                "|---|---|---|---|\n"
+                "| 无法输出主推品排序 | product_ad_tool | error.code, error.message | "
+                "需要补充有效商户ID或商品ID |\n\n"
                 "## 风险与待验证\n当前为 synthetic demo，缺少 merchant_id 或 product_id 时"
                 "不能输出确定主推品排序。"
             )
@@ -309,6 +322,7 @@ class ReportService:
             f"## 证据来源\n"
             f"- product_ad_tool：mine_high_value_products、rank_ad_candidates。\n"
             f"- RAG 文档：{evidence_source_text}。\n\n"
+            f"{self._build_evidence_alignment_table(state)}"
             f"## 风险与待验证\n"
             f"当前为 synthetic demo data。真实投放需结合预算、供给、商户承接能力、"
             f"线上实验和售后质量继续验证。"
@@ -328,7 +342,12 @@ class ReportService:
             return (
                 f"## 问题概述\n用户问题关注“{state.safe_user_query or state.user_query}”。"
                 f"{message}\n\n## ROI 守护建议\n缺少商品级 PCVR、price 或 ROI 数据时，"
-                "不应给出具体 CPC。"
+                "无法计算具体 CPC，需要补充有效商品ID；不应给出推荐出价。\n\n"
+                "## 证据对齐表\n"
+                "| 结论 | 支撑来源 | 证据字段 | 不确定性 |\n"
+                "|---|---|---|---|\n"
+                "| 无法计算出价区间 | product_ad_tool | error.code, error.message | "
+                "需要补充商品级广告数据 |"
             )
 
         cpc_range = bid_range.get("recommended_cpc_range", [])
@@ -341,7 +360,8 @@ class ReportService:
             f"并检查加价后的 ROI guardrail（ROI守护）。\n\n"
             f"## 出价区间计算\n"
             f"- PCVR：{bid_range.get('pcvr')}；price：{bid_range.get('price')}；"
-            f"target_roi：{bid_range.get('target_roi')}。\n"
+            f"target_roi：{bid_range.get('target_roi')}；目标ROI："
+            f"{bid_range.get('target_roi')}。\n"
             f"- expected_revenue_per_click：{bid_range.get('expected_revenue_per_click')}；"
             f"expected_profit_per_click：{bid_range.get('expected_profit_per_click')}。\n"
             f"- max_cpc_by_revenue_roi：{bid_range.get('max_cpc_by_revenue_roi')}；"
@@ -354,12 +374,15 @@ class ReportService:
             f"- CTR：{_format_percent(simulation.get('ctr'))}；CVR："
             f"{_format_percent(simulation.get('cvr'))}；orders："
             f"{simulation.get('orders', '-')}；ROI：{simulation.get('roi', '-')}；"
-            f"roi_status：{simulation.get('roi_status', '-')}。\n\n"
+            f"roi_status：{simulation.get('roi_status', '-')}；roi_gap："
+            f"{simulation.get('roi_gap', '-')}；guardrail_action："
+            f"{simulation.get('guardrail_action', '-')}。\n\n"
             f"## ROI守护建议\n"
             f"- 如果 ROI 高于目标，可以谨慎加价；如果 ROI 接近目标，需要智能调价保护。\n"
             f"- 如果 ROI 低于目标，不建议继续加价；若退款率偏高，应降低上限出价或先处理履约风险。\n"
             f"- 本次建议使用 {bid_range.get('bid_strategy')} 策略，并通过 A/B测试观察 "
             f"CTR、CVR、订单和 ROI。\n\n"
+            f"{self._build_evidence_alignment_table(state)}"
             f"## 证据来源\n"
             f"- product_ad_tool：recommend_bid_range、simulate_bid_strategy。\n"
             f"- RAG 文档：{evidence_source_text}。"
@@ -373,6 +396,8 @@ class ReportService:
         ranked = product_ad.get("ranked_candidates", {})
         recall_results = recall.get("results", [])
         ranked_candidates = ranked.get("ranked_candidates", [])
+        fallback_candidates = ranked.get("fallback_candidates", [])
+        uncertainty_note = recall.get("uncertainty_note") or ranked.get("uncertainty_note", "")
         recall_lines = "\n".join(
             (
                 f"- {item.get('product_id')} {item.get('product_name')}："
@@ -389,21 +414,37 @@ class ReportService:
             )
             for item in ranked_candidates[:5]
         )
+        fallback_lines = "\n".join(
+            (
+                f"- fallback {item.get('product_id')} {item.get('product_name')}："
+                "非 Query 直接召回，仅作为商户候选补充，存在匹配风险。"
+            )
+            for item in fallback_candidates[:5]
+        )
+        fallback_warning = (
+            "- 商户与 Query 未完全匹配，fallback 候选不能视为强相关。"
+            if fallback_lines
+            else ""
+        )
         evidence_source_text = self._format_evidence_sources(state)
         return (
             f"## 问题概述\n"
             f"用户问题关注“{state.safe_user_query or state.user_query}”。当前任务是解释 Query"
             f" “{recall.get('query', '')}” 应召回哪些 SKU/服务项目。\n\n"
             f"## Query-SKU 召回结果\n"
-            f"{recall_lines or '- 暂无召回结果，需要补充更明确 Query。'}\n\n"
+            f"{recall_lines or '- 未命中 exact 召回；fallback 相似检索结果为空，存在不确定性。'}\n"
+            f"{('- 不确定性：' + uncertainty_note) if uncertainty_note else ''}\n\n"
             f"## 召回路径解释\n"
             f"- keyword_inverted：词面强匹配，适合 Query 与服务名或套餐词直接重合。\n"
             f"- query_expansion：同义词、服务词或类目扩展，适合相关服务补充召回。\n"
             f"- vector_match：语义相近匹配，适合词面不同但服务意图接近的 Query。\n\n"
             f"## 排序理由\n"
             f"{ranked_lines or '- 暂无融合排序结果。'}\n"
+            f"{fallback_lines if fallback_lines else ''}\n"
+            f"{fallback_warning}\n"
             f"最终排序不仅看 recall_score，还结合 product_growth_score、ROI、"
             f"关键词覆盖和退款风险。\n\n"
+            f"{self._build_evidence_alignment_table(state)}"
             f"## 证据来源\n"
             f"- product_ad_tool：recall_query_to_sku、rank_ad_candidates。\n"
             f"- RAG 文档：{evidence_source_text}。"
@@ -437,6 +478,7 @@ class ReportService:
             f"{insight_lines or '- 商品级广告更适合高意向Query和明确服务需求。'}\n"
             f"- 课程口径结论：商品级广告更适合高意向Query和明确服务需求。\n"
             f"- 商品级广告相比 POI级广告更依赖商品数据治理、供给稳定和 ROI 守护。\n\n"
+            f"{self._build_evidence_alignment_table(state)}"
             f"## 证据来源\n"
             f"- product_ad_tool：compare_poi_vs_product_ads。\n"
             f"- RAG 文档：{evidence_source_text}。"
@@ -471,6 +513,64 @@ class ReportService:
 
         evidence_sources = self._collect_evidence_sources(state.retrieved_docs)
         return ", ".join(evidence_sources) if evidence_sources else "未检索到足够知识证据"
+
+    def _build_evidence_alignment_table(self, state: AgentState) -> str:
+        """Render a compact evidence-alignment table for product-ad reports."""
+
+        product_ad = state.ad_results or state.tool_results.get("product_ad", {})
+        rows = [
+            "| 结论 | 支撑来源 | 证据字段 | 不确定性 |",
+            "|---|---|---|---|",
+        ]
+        if state.intent in {"product_ad_strategy", "sku_mining"}:
+            candidates = product_ad.get("sku_mining", {}).get("candidates", [])
+            if candidates:
+                top = candidates[0]
+                rows.append(
+                    f"| {top.get('product_id')} 可作为候选主推品 | product_ad_tool | "
+                    "product_growth_score, CVR, GMV占比, PCVR, ROI | "
+                    f"{'、'.join(top.get('risk_flags', [])) or 'synthetic data'} |"
+                )
+        elif state.intent == "bid_recommendation":
+            bid = product_ad.get("bid_range", {})
+            simulation = product_ad.get("bid_simulation", {})
+            if bid:
+                rows.append(
+                    f"| {bid.get('product_id')} 出价上限需要谨慎 | bid_range_tool | "
+                    "target_roi, max_cpc_by_profit_roi, recommended_cpc_range | "
+                    f"{'、'.join(bid.get('risk_flags', [])) or 'synthetic data'} |"
+                )
+            if simulation:
+                rows.append(
+                    "| 加价模拟需受 ROI guardrail 约束 | simulate_bid_strategy | "
+                    "target_roi, roi, roi_status, guardrail_action | "
+                    f"{simulation.get('risk_note', 'synthetic experiment')} |"
+                )
+        elif state.intent == "sku_recall":
+            recall = product_ad.get("query_recall", {})
+            ranked = product_ad.get("ranked_candidates", {})
+            for item in recall.get("results", [])[:2]:
+                rows.append(
+                    f"| {recall.get('query')} 召回 {item.get('product_id')} | "
+                    "query_recall_tool | recall_path, recall_score, matched_terms | "
+                    f"{item.get('uncertainty_note', 'demo recall')} |"
+                )
+            for item in ranked.get("fallback_candidates", [])[:2]:
+                rows.append(
+                    f"| {item.get('product_id')} 仅作为 fallback 候选 | rank_ad_candidates | "
+                    "candidate_source, recall_matched=false | 非 Query 直接召回 |"
+                )
+        elif state.intent == "poi_vs_product_ad_comparison":
+            rows.append(
+                "| 商品级广告与 POI级广告对比 | compare_poi_vs_product_ads | "
+                "CTR, CVR, orders, ROI | synthetic baseline |"
+            )
+
+        if len(rows) == 2:
+            rows.append(
+                "| 当前结论需要补充证据 | tool/RAG | missing_fields | synthetic data |"
+            )
+        return "## 证据对齐表\n" + "\n".join(rows) + "\n\n"
 
     def _collect_evidence_sources(self, docs: list[dict[str, Any]]) -> list[str]:
         """Collect unique evidence source names in display order."""

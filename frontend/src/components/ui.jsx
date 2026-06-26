@@ -96,8 +96,13 @@ export function DataTable({ columns, rows }) {
           </tr>
         </thead>
         <tbody className="divide-y divide-line bg-white">
-          {rows.map((row) => (
-            <tr key={`${row.metric || row.section}-${row.status || row.output}`}>
+          {rows.map((row, rowIndex) => (
+            <tr
+              key={
+                row.id ||
+                `${row.metric || row.section || row.product || row.campaign}-${rowIndex}`
+              }
+            >
               {columns.map((column) => {
                 const value = row[column.key];
                 const isDown = typeof value === "string" && value.startsWith("-");

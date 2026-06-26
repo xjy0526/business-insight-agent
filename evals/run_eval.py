@@ -147,6 +147,18 @@ def _aggregate_overall_metrics(case_results: list[dict[str, Any]]) -> dict[str, 
             case_results,
             "claim_evidence_alignment",
         ),
+        "avg_numeric_bid_correctness": _average_metric(
+            case_results,
+            "numeric_bid_correctness",
+        ),
+        "avg_no_default_entity_leakage": _average_metric(
+            case_results,
+            "no_default_entity_leakage",
+        ),
+        "avg_hard_case_uncertainty": _average_metric(
+            case_results,
+            "hard_case_uncertainty",
+        ),
         "avg_root_cause_or_recommendation_hit": _average_metric(
             case_results,
             "root_cause_or_recommendation_hit",
@@ -180,6 +192,9 @@ def _empty_overall_metrics() -> dict[str, Any]:
         "avg_sku_recall_fields": 0.0,
         "avg_poi_vs_product_comparison": 0.0,
         "avg_claim_evidence_alignment": 0.0,
+        "avg_numeric_bid_correctness": 0.0,
+        "avg_no_default_entity_leakage": 0.0,
+        "avg_hard_case_uncertainty": 0.0,
         "avg_root_cause_or_recommendation_hit": 0.0,
         "avg_trace_field_coverage": 0.0,
         "error_expectation_accuracy": 0.0,
@@ -302,6 +317,9 @@ def _compact_mode_metrics(result: dict[str, Any]) -> dict[str, Any]:
         "avg_bid_guardrail": overall.get("avg_bid_guardrail", 0.0),
         "avg_sku_recall_fields": overall.get("avg_sku_recall_fields", 0.0),
         "avg_claim_evidence_alignment": overall.get("avg_claim_evidence_alignment", 0.0),
+        "avg_numeric_bid_correctness": overall.get("avg_numeric_bid_correctness", 0.0),
+        "avg_no_default_entity_leakage": overall.get("avg_no_default_entity_leakage", 0.0),
+        "avg_hard_case_uncertainty": overall.get("avg_hard_case_uncertainty", 0.0),
         "avg_reflection_quality": overall.get("avg_reflection_quality", 0.0),
         "security_flag_pass_rate": overall.get("security_flag_pass_rate", 0.0),
         "avg_golden_answer_coverage": overall.get("avg_golden_answer_coverage", 0.0),
@@ -339,6 +357,7 @@ def _build_ablation_delta(modes: dict[str, dict[str, Any]]) -> dict[str, dict[st
 def build_eval_summary(
     mode_results: dict[str, dict[str, Any]],
     fail_under: float | None = None,
+    generated_command: str = "python -m evals.run_eval",
 ) -> dict[str, Any]:
     """Build a machine-readable eval summary with optional threshold status."""
 
@@ -346,6 +365,7 @@ def build_eval_summary(
         mode_name: _compact_mode_metrics(result)
         for mode_name, result in mode_results.items()
     }
+    full_result = mode_results.get("full_agent") or next(iter(mode_results.values()), {})
     full_score = modes.get("full_agent", {}).get("avg_score", 0.0)
     threshold_check = {
         "enabled": fail_under is not None,
@@ -355,6 +375,10 @@ def build_eval_summary(
     }
     return {
         "generated_at": _now_iso(),
+        "generated_command": generated_command,
+        "case_count": int(full_result.get("case_count", 0)),
+        "modes_count": len(modes),
+        "full_agent_gate": full_result.get("gate", {}),
         "modes": modes,
         "ablation_delta": _build_ablation_delta(modes),
         "threshold_check": threshold_check,
@@ -378,6 +402,7 @@ def append_eval_history(summary: dict[str, Any], history_path: str | Path | None
     path.parent.mkdir(parents=True, exist_ok=True)
     compact_record = {
         "generated_at": summary.get("generated_at"),
+        "case_count": summary.get("case_count"),
         "modes": summary.get("modes", {}),
         "threshold_check": summary.get("threshold_check", {}),
     }
@@ -513,9 +538,20 @@ def main() -> None:
     args = parser.parse_args()
 
     run_all = args.all_modes or args.with_ablations
+    generated_command = "python -m evals.run_eval"
+    if run_all:
+        generated_command += " --all-modes"
+    else:
+        generated_command += f" --mode {args.mode}"
+    if args.fail_under is not None:
+        generated_command += f" --fail-under {args.fail_under:.2f}"
     if run_all:
         mode_results = run_all_modes(args.cases)
-        summary = build_eval_summary(mode_results, fail_under=args.fail_under)
+        summary = build_eval_summary(
+            mode_results,
+            fail_under=args.fail_under,
+            generated_command=generated_command,
+        )
         write_eval_summary(summary, args.output)
         result = {
             "case_count": mode_results["full_agent"]["case_count"],
@@ -533,7 +569,11 @@ def main() -> None:
         mode_results = {args.mode: result}
         if args.mode != "full_agent":
             mode_results["full_agent"] = run_evaluations(args.cases, mode="full_agent")
-        summary = build_eval_summary(mode_results, fail_under=args.fail_under)
+        summary = build_eval_summary(
+            mode_results,
+            fail_under=args.fail_under,
+            generated_command=generated_command,
+        )
         write_eval_summary(summary, args.output)
         result["ablation_results"] = []
         result["summary"] = summary

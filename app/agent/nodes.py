@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-import re
 from typing import Any
 
+from app.agent.entity_parser import parse_ad_entities, parse_product_ids
 from app.agent.prompts import INTENT_ROUTER_PROMPT, PLANNER_PROMPT
 from app.agent.state import AgentState, _now_iso
 from app.db.database import get_connection
@@ -65,7 +65,7 @@ def _record_llm_provider(state: AgentState, llm: LLMService) -> None:
 def _extract_product_id_from_query(query: str) -> str:
     """Map explicit product IDs or known product names to product_id."""
 
-    product_ids = _extract_product_ids_from_query(query)
+    product_ids = parse_product_ids(query)
     if product_ids:
         return product_ids[0]
 
@@ -86,71 +86,11 @@ def _extract_product_id_from_query(query: str) -> str:
     return ""
 
 
-def _extract_product_ids_from_query(query: str) -> list[str]:
-    """Extract all explicit product IDs from a user query."""
+def _default_bid_multiplier(query: str) -> float:
+    """Return a conservative demo default when no explicit bid lift is parsed."""
 
-    product_ids = re.findall(r"\bP\d{4}\b", query.upper())
-    deduped_ids: list[str] = []
-    for product_id in product_ids:
-        if product_id not in deduped_ids:
-            deduped_ids.append(product_id)
-    return deduped_ids
-
-
-def _extract_merchant_id_from_query(query: str) -> str:
-    """Extract a merchant ID such as M001 from text."""
-
-    match = re.search(r"\bM\d{3}\b", query.upper())
-    return match.group(0) if match else ""
-
-
-def _extract_bid_multiplier_from_query(query: str) -> float:
-    """Extract bid multiplier from phrases like 加价20%."""
-
-    percent_match = re.search(r"(?:加价|提价|溢价|上调)\s*(\d+(?:\.\d+)?)\s*%", query)
-    if percent_match:
-        return round(1 + float(percent_match.group(1)) / 100, 3)
-    multiplier_match = re.search(r"(?:bid_multiplier|出价倍数)\s*[:：=]?\s*(\d+(?:\.\d+)?)", query)
-    if multiplier_match:
-        return round(float(multiplier_match.group(1)), 3)
-    return 1.2 if "加价" in query or "溢价" in query else 1.0
-
-
-def _extract_target_roi_from_query(query: str) -> float:
-    """Extract target ROI from natural-language query."""
-
-    match = re.search(r"(?:目标\s*)?ROI\s*(?:为|=|:|：)?\s*(\d+(?:\.\d+)?)", query, re.I)
-    if match:
-        return float(match.group(1))
-    return 3.0
-
-
-def _extract_recall_query_from_user_query(query: str) -> str:
-    """Extract the natural search query from recall-style questions."""
-
-    patterns = [
-        r"用户搜索\s*([^，,。?？\s]+)",
-        r"搜索\s*([^，,。?？\s]+)",
-        r"Query\s*(?:是|为|:|：)?\s*([^，,。?？\s]+)",
-    ]
-    for pattern in patterns:
-        match = re.search(pattern, query, re.I)
-        if match:
-            return match.group(1).strip()
-    known_queries = [
-        "水光补水",
-        "小气泡清洁",
-        "美甲款式",
-        "自然款美睫",
-        "双人烤肉",
-        "亲子摄影",
-        "健身私教体验",
-        "洗剪吹造型",
-    ]
-    for known_query in known_queries:
-        if known_query in query:
-            return known_query
-    return query.strip()
+    bid_lift_terms = ("加价", "提价", "溢价", "上调", "提高出价")
+    return 1.2 if any(term in query for term in bid_lift_terms) else 1.0
 
 
 def _is_product_ad_query(query: str) -> bool:
@@ -197,6 +137,7 @@ def _infer_product_ad_intent_from_query(query: str) -> tuple[str, str, list[str]
     """Infer product-level advertising intents with deterministic rules."""
 
     normalized_query = query.upper()
+    parsed = parse_ad_entities(query)
     comparison_terms = ("POI", "门店级", "商品级广告相比", "升级到商品级")
     recall_terms = (
         "召回",
@@ -239,6 +180,14 @@ def _infer_product_ad_intent_from_query(query: str) -> tuple[str, str, list[str]
         "GMV 占比",
         "GMV占比",
     )
+
+    if (
+        "这个店" in query
+        and not parsed.merchant_id
+        and not parsed.product_id
+        and not any(term in normalized_query or term in query for term in ("CVR", "GMV", "ROI"))
+    ):
+        return ("unknown", "unknown", [])
 
     if any(term in normalized_query or term in query for term in comparison_terms):
         return (
@@ -709,8 +658,9 @@ def intent_router_node(state: AgentState) -> AgentState:
         result = llm.generate_json(prompt)
         _record_llm_provider(state, llm)
 
-        merchant_id = _extract_merchant_id_from_query(query)
-        product_id = _extract_product_id_from_query(query)
+        parsed = parse_ad_entities(query)
+        merchant_id = parsed.merchant_id or ""
+        product_id = parsed.product_id or _extract_product_id_from_query(query)
         entity_id = result.get("entity_id") or product_id or merchant_id
         if not entity_id:
             entity_id = product_id or merchant_id
@@ -742,7 +692,7 @@ def intent_router_node(state: AgentState) -> AgentState:
         state.route_type = "product_ad_tool" if intent in PRODUCT_AD_INTENTS else "metrics_rag"
         state.related_entity_ids = [
             product_id
-            for product_id in _extract_product_ids_from_query(query)
+            for product_id in parse_product_ids(query)
             if product_id != entity_id
         ]
         state.metric = metric
@@ -889,8 +839,9 @@ def _resolve_product_ad_entities(state: AgentState) -> dict[str, Any]:
     """Extract entities used by product-level ad tools."""
 
     query = _effective_query(state)
-    product_id = _extract_product_id_from_query(query)
-    merchant_id = _extract_merchant_id_from_query(query)
+    parsed = parse_ad_entities(query)
+    product_id = parsed.product_id or _extract_product_id_from_query(query)
+    merchant_id = parsed.merchant_id or ""
     if state.entity_type == "product" and state.entity_id:
         product_id = state.entity_id
     if state.entity_type == "merchant" and state.entity_id:
@@ -900,9 +851,13 @@ def _resolve_product_ad_entities(state: AgentState) -> dict[str, Any]:
     return {
         "product_id": product_id,
         "merchant_id": merchant_id,
-        "recall_query": _extract_recall_query_from_user_query(query),
-        "target_roi": _extract_target_roi_from_query(query),
-        "bid_multiplier": _extract_bid_multiplier_from_query(query),
+        "poi_id": parsed.poi_id,
+        "recall_query": parsed.search_query or query.strip(),
+        "target_roi": parsed.target_roi or 3.0,
+        "bid_multiplier": parsed.bid_multiplier or _default_bid_multiplier(query),
+        "budget_limited": parsed.budget_limited,
+        "refund_risk_focus": parsed.refund_risk_focus,
+        "comparison_focus": parsed.comparison_focus,
     }
 
 
@@ -935,8 +890,10 @@ def product_ad_tool_node(state: AgentState) -> AgentState:
 
         if state.intent == "product_ad_strategy":
             if not merchant_id and not product_id:
-                merchant_id = "M001"
-                result["default_merchant_used"] = True
+                result["error"] = {
+                    "code": "missing_merchant_or_product",
+                    "message": "需要补充 merchant_id 或 product_id 才能生成主推品建议。",
+                }
             if merchant_id:
                 result["sku_mining"] = mine_high_value_products(merchant_id)
                 result["ranked_candidates"] = rank_ad_candidates(merchant_id=merchant_id)
@@ -968,7 +925,11 @@ def product_ad_tool_node(state: AgentState) -> AgentState:
         elif state.intent == "bid_recommendation":
             if product_id:
                 result["bid_range"] = recommend_bid_range(product_id, target_roi)
-                result["bid_simulation"] = simulate_bid_strategy(product_id, bid_multiplier)
+                result["bid_simulation"] = simulate_bid_strategy(
+                    product_id,
+                    bid_multiplier,
+                    target_roi,
+                )
             else:
                 result["error"] = {
                     "code": "missing_product_id",
@@ -977,7 +938,11 @@ def product_ad_tool_node(state: AgentState) -> AgentState:
         elif state.intent == "poi_vs_product_ad_comparison":
             resolved_merchant_id = merchant_id or "M001"
             result["comparison"] = compare_poi_vs_product_ads(resolved_merchant_id)
-            result["default_merchant_used"] = not bool(merchant_id)
+            result["default_entity_used"] = not bool(merchant_id)
+            if not merchant_id:
+                result["default_entity_reason"] = (
+                    "demo fallback because merchant_id is missing"
+                )
 
         state.ad_results = result
         state.tool_results["product_ad"] = result

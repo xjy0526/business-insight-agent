@@ -1,8 +1,26 @@
 {
-  "generated_at": "2026-06-26T17:55:57.292227+00:00",
+  "generated_at": "2026-06-26T20:08:06.154443+00:00",
+  "generated_command": "python -m evals.run_eval --all-modes --fail-under 0.70",
+  "case_count": 44,
+  "modes_count": 6,
+  "full_agent_gate": {
+    "pass": true,
+    "checks": {
+      "avg_score": {
+        "actual": 0.999432,
+        "threshold": 0.72,
+        "pass": true
+      },
+      "intent_accuracy": {
+        "actual": 1.0,
+        "threshold": 0.7,
+        "pass": true
+      }
+    }
+  },
   "modes": {
     "full_agent": {
-      "avg_score": 0.998412,
+      "avg_score": 0.999432,
       "intent_accuracy": 1.0,
       "evidence_hit_rate": 1.0,
       "avg_tool_result_key_coverage": 1.0,
@@ -10,18 +28,137 @@
       "avg_bid_guardrail": 1.0,
       "avg_sku_recall_fields": 1.0,
       "avg_claim_evidence_alignment": 1.0,
-      "avg_reflection_quality": 0.566667,
-      "security_flag_pass_rate": 1.0,
+      "avg_numeric_bid_correctness": 1.0,
+      "avg_no_default_entity_leakage": 0.909091,
+      "avg_hard_case_uncertainty": 0.977273,
+      "avg_reflection_quality": 0.503788,
+      "security_flag_pass_rate": 0.977273,
       "avg_golden_answer_coverage": 1.0,
-      "avg_latency_ms": 7.76,
-      "p95_latency_ms": 39
+      "avg_latency_ms": 3.8,
+      "p95_latency_ms": 8
+    },
+    "no_rag": {
+      "avg_score": 0.984023,
+      "intent_accuracy": 1.0,
+      "evidence_hit_rate": 0.590909,
+      "avg_tool_result_key_coverage": 1.0,
+      "avg_ad_recommendation_fields": 0.963068,
+      "avg_bid_guardrail": 0.994318,
+      "avg_sku_recall_fields": 1.0,
+      "avg_claim_evidence_alignment": 1.0,
+      "avg_numeric_bid_correctness": 1.0,
+      "avg_no_default_entity_leakage": 0.909091,
+      "avg_hard_case_uncertainty": 0.977273,
+      "avg_reflection_quality": 0.498485,
+      "security_flag_pass_rate": 0.977273,
+      "avg_golden_answer_coverage": 1.0,
+      "avg_latency_ms": 3.05,
+      "p95_latency_ms": 8
+    },
+    "no_review_campaign": {
+      "avg_score": 0.995538,
+      "intent_accuracy": 1.0,
+      "evidence_hit_rate": 1.0,
+      "avg_tool_result_key_coverage": 0.9,
+      "avg_ad_recommendation_fields": 1.0,
+      "avg_bid_guardrail": 1.0,
+      "avg_sku_recall_fields": 1.0,
+      "avg_claim_evidence_alignment": 1.0,
+      "avg_numeric_bid_correctness": 1.0,
+      "avg_no_default_entity_leakage": 0.954545,
+      "avg_hard_case_uncertainty": 0.977273,
+      "avg_reflection_quality": 0.499242,
+      "security_flag_pass_rate": 0.977273,
+      "avg_golden_answer_coverage": 1.0,
+      "avg_latency_ms": 2.95,
+      "p95_latency_ms": 7
+    },
+    "no_reflection": {
+      "avg_score": 0.999432,
+      "intent_accuracy": 1.0,
+      "evidence_hit_rate": 1.0,
+      "avg_tool_result_key_coverage": 1.0,
+      "avg_ad_recommendation_fields": 1.0,
+      "avg_bid_guardrail": 1.0,
+      "avg_sku_recall_fields": 1.0,
+      "avg_claim_evidence_alignment": 1.0,
+      "avg_numeric_bid_correctness": 1.0,
+      "avg_no_default_entity_leakage": 0.909091,
+      "avg_hard_case_uncertainty": 0.977273,
+      "avg_reflection_quality": 0.2,
+      "security_flag_pass_rate": 0.977273,
+      "avg_golden_answer_coverage": 1.0,
+      "avg_latency_ms": 3.2,
+      "p95_latency_ms": 8
+    },
+    "no_metrics_tool": {
+      "avg_score": 0.954314,
+      "intent_accuracy": 1.0,
+      "evidence_hit_rate": 0.977273,
+      "avg_tool_result_key_coverage": 0.67803,
+      "avg_ad_recommendation_fields": 1.0,
+      "avg_bid_guardrail": 1.0,
+      "avg_sku_recall_fields": 1.0,
+      "avg_claim_evidence_alignment": 1.0,
+      "avg_numeric_bid_correctness": 1.0,
+      "avg_no_default_entity_leakage": 0.977273,
+      "avg_hard_case_uncertainty": 0.977273,
+      "avg_reflection_quality": 0.2,
+      "security_flag_pass_rate": 0.977273,
+      "avg_golden_answer_coverage": 1.0,
+      "avg_latency_ms": 0.61,
+      "p95_latency_ms": 1
+    },
+    "mock_only": {
+      "avg_score": 0.892803,
+      "intent_accuracy": 1.0,
+      "evidence_hit_rate": 0.590909,
+      "avg_tool_result_key_coverage": 0.67803,
+      "avg_ad_recommendation_fields": 0.877841,
+      "avg_bid_guardrail": 0.867045,
+      "avg_sku_recall_fields": 0.931818,
+      "avg_claim_evidence_alignment": 1.0,
+      "avg_numeric_bid_correctness": 0.897727,
+      "avg_no_default_entity_leakage": 0.977273,
+      "avg_hard_case_uncertainty": 0.977273,
+      "avg_reflection_quality": 0.2,
+      "security_flag_pass_rate": 0.977273,
+      "avg_golden_answer_coverage": 1.0,
+      "avg_latency_ms": 0.0,
+      "p95_latency_ms": 0
     }
   },
-  "ablation_delta": {},
+  "ablation_delta": {
+    "no_rag_vs_full": {
+      "avg_score_delta": -0.015409,
+      "evidence_hit_rate_delta": -0.409091,
+      "avg_latency_ms_delta": -0.75
+    },
+    "no_review_campaign_vs_full": {
+      "avg_score_delta": -0.003894,
+      "evidence_hit_rate_delta": 0.0,
+      "avg_latency_ms_delta": -0.85
+    },
+    "no_reflection_vs_full": {
+      "avg_score_delta": 0.0,
+      "evidence_hit_rate_delta": 0.0,
+      "avg_latency_ms_delta": -0.6
+    },
+    "no_metrics_tool_vs_full": {
+      "avg_score_delta": -0.045118,
+      "evidence_hit_rate_delta": -0.022727,
+      "avg_latency_ms_delta": -3.19
+    },
+    "mock_only_vs_full": {
+      "avg_score_delta": -0.106629,
+      "evidence_hit_rate_delta": -0.409091,
+      "avg_latency_ms_delta": -3.8
+    }
+  },
   "threshold_check": {
-    "enabled": false,
-    "threshold": null,
-    "full_agent_avg_score": 0.998412,
+    "enabled": true,
+    "threshold": 0.7,
+    "full_agent_avg_score": 0.999432,
     "pass": true
   }
 }

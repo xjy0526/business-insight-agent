@@ -62,6 +62,7 @@ def _compact_metrics(result: dict[str, Any]) -> dict[str, Any]:
         "avg_bid_guardrail": overall.get("avg_bid_guardrail", 0.0),
         "avg_sku_recall_fields": overall.get("avg_sku_recall_fields", 0.0),
         "avg_claim_evidence_alignment": overall.get("avg_claim_evidence_alignment", 0.0),
+        "avg_latency_ms": overall.get("avg_latency_ms", 0.0),
     }
 
 
@@ -69,7 +70,21 @@ def run_ablation(cases_path: str | Path = DEFAULT_CASES_PATH) -> dict[str, Any]:
     """Run all course ablation modes and return a JSON-serializable report."""
 
     mode_results: dict[str, dict[str, Any]] = {}
+    full_config = ABLATION_MODES["full_product_ad_agent"]
+    full_result = run_evaluations(
+        cases_path=cases_path,
+        mode="full_agent",
+        controls=full_config["controls"],
+    )
+    mode_results["full_product_ad_agent"] = {
+        "description": full_config["description"],
+        "controls": full_config["controls"],
+        "overall_metrics": full_result["overall_metrics"],
+    }
+
     for mode_name, config in ABLATION_MODES.items():
+        if mode_name == "full_product_ad_agent":
+            continue
         result = run_evaluations(
             cases_path=cases_path,
             mode="full_agent",
@@ -86,7 +101,7 @@ def run_ablation(cases_path: str | Path = DEFAULT_CASES_PATH) -> dict[str, Any]:
         for mode_name, result in mode_results.items()
     }
     return {
-        "case_count": run_evaluations(cases_path=cases_path, mode="full_agent")["case_count"],
+        "case_count": full_result["case_count"],
         "overall_metrics_by_mode": compact,
         "summary": [
             "完整 Agent 在证据一致性、ROI guardrail 和召回解释方面表现最好",

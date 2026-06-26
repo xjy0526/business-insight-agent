@@ -9,6 +9,7 @@ from fastapi.staticfiles import StaticFiles
 from app.api.routes_agent import router as agent_router
 from app.api.routes_eval import router as eval_router
 from app.api.routes_metrics import router as metrics_router
+from app.api.routes_product_ad import router as product_ad_router
 from app.api.routes_trace import router as trace_router
 from app.config import get_settings
 from app.schemas import HealthResponse
@@ -29,6 +30,7 @@ app.mount("/static", StaticFiles(directory=FRONTEND_DIR), name="static")
 app.include_router(agent_router)
 app.include_router(eval_router)
 app.include_router(metrics_router)
+app.include_router(product_ad_router)
 app.include_router(trace_router)
 
 

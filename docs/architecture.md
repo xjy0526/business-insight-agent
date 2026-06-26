@@ -400,7 +400,7 @@ Golden answer 与人工标注：
 CI 使用：
 
 ```bash
-python -m evals.run_eval --mode full_agent --fail-under 0.60
+python -m evals.run_eval --all-modes --fail-under 0.70
 ```
 
 如果 `full_agent.avg_score` 低于阈值，命令返回非零退出码，阻止质量回退进入主分支。

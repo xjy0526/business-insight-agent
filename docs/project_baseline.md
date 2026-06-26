@@ -134,7 +134,7 @@ Eval cases 位于 `evals/eval_cases.json`，当前共 20 个 case。单 case 指
   - `ruff check app evals tests`
   - `mypy app evals`
   - `pytest`
-  - `python -m evals.run_eval --mode full_agent --fail-under 0.60`
+  - `python -m evals.run_eval --all-modes --fail-under 0.70`
   - `docker build -t business-insight-agent:ci .`
 - `integration`
   - 安装 `requirements.txt` 和 `requirements-integration.txt`

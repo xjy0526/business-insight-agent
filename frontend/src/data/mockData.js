@@ -119,3 +119,116 @@ export const reportSections = [
     output: "CSV",
   },
 ];
+
+export const productAdCandidates = [
+  {
+    id: "P1001",
+    rank: "1",
+    product: "水光补水护理套餐",
+    cvr: "18.0%",
+    gmvShare: "32.0%",
+    pcvr: "6.5%",
+    roi: "3.8",
+    risk: "退款率需关注",
+  },
+  {
+    id: "P1002",
+    rank: "2",
+    product: "小气泡清洁体验",
+    cvr: "16.0%",
+    gmvShare: "21.0%",
+    pcvr: "5.8%",
+    roi: "3.4",
+    risk: "适合小流量验证",
+  },
+  {
+    id: "P1003",
+    rank: "3",
+    product: "舒缓修护面部护理",
+    cvr: "13.5%",
+    gmvShare: "18.0%",
+    pcvr: "4.9%",
+    roi: "3.1",
+    risk: "供给档期一般",
+  },
+];
+
+export const bidRangeRows = [
+  {
+    id: "P1001",
+    product: "P1001",
+    targetRoi: "4.5",
+    revenueCpc: "2.24",
+    profitCpc: "0.72",
+    range: "0.43 - 0.94",
+    action: "watch",
+  },
+];
+
+export const recallRows = [
+  {
+    id: "water-p1001",
+    query: "水光补水",
+    product: "P1001",
+    path: "keyword_inverted",
+    score: "0.96",
+    match: "水光|补水",
+  },
+  {
+    id: "bubble-p1002",
+    query: "小气泡护理",
+    product: "P1002",
+    path: "tfidf_vector_fallback",
+    score: "0.42",
+    match: "小气泡|护理",
+  },
+  {
+    id: "nail-m001",
+    query: "美甲款式 @ M001",
+    product: "fallback only",
+    path: "merchant_fallback",
+    score: "0.00",
+    match: "未直接召回",
+  },
+];
+
+export const poiProductCompareRows = [
+  {
+    id: "poi",
+    campaign: "POI级广告",
+    ctr: "3.8%",
+    cvr: "8.4%",
+    orders: "138",
+    roi: "2.7",
+  },
+  {
+    id: "product",
+    campaign: "商品级广告",
+    ctr: "5.6%",
+    cvr: "12.8%",
+    orders: "186",
+    roi: "3.3",
+  },
+  {
+    id: "smart",
+    campaign: "商品级广告+智能调价",
+    ctr: "5.9%",
+    cvr: "13.4%",
+    orders: "198",
+    roi: "3.6",
+  },
+];
+
+export const productAdTrace = {
+  trace_id: "trace_course_product_ad_demo",
+  tool_results: {
+    product_ad: {
+      score_version: "product_ad_score_v2",
+      evidence_alignment: [
+        "P1001 supported by CVR, GMV share, PCVR and ROI",
+        "target_roi=4.5 triggers watch/down_bid guardrail language",
+        "merchant fallback candidates are not treated as direct Query recall",
+      ],
+    },
+  },
+};
