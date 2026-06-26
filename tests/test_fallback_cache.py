@@ -30,6 +30,7 @@ def test_same_query_hits_cache_on_second_request() -> None:
     assert second.status_code == 200
     assert first.json()["cached"] is False
     assert second.json()["cached"] is True
+    assert second.json()["runner"] == "sequential"
     assert second.json()["cache_key"] == first.json()["cache_key"]
     assert second.json()["trace_id"] != first.json()["trace_id"]
     assert f"trace_id: {second.json()['trace_id']}" in second.json()["answer"]
@@ -67,6 +68,7 @@ def test_cache_service_records_cache_hit_trace() -> None:
 
     trace = TraceService().get_trace(payload["trace_id"])
     assert payload["cached"] is True
+    assert payload["runner"] == "sequential"
     assert payload["trace_id"] != "original-trace"
     assert f"trace_id: {payload['trace_id']}" in payload["answer"]
     assert trace is not None

@@ -114,6 +114,7 @@ class CacheService:
         payload["cached"] = True
         payload["cache_key"] = key
         payload["latency_ms"] = latency_ms
+        payload["runner"] = payload.get("runner", "sequential")
         payload["answer"] = self._rewrite_answer_trace_id(payload.get("answer", ""), trace_id)
 
         state = AgentState(
@@ -125,11 +126,13 @@ class CacheService:
             final_answer=payload.get("answer", ""),
             cache_key=key,
             cache_hit=True,
+            runner=payload.get("runner", "sequential"),
             finished_at=_now_iso(),
         )
         state.node_spans.append(
             {
                 "node": "cache_hit",
+                "runner": state.runner,
                 "latency_ms": latency_ms,
                 "input_summary": {"cache_key": key},
                 "output_summary": {

@@ -10,21 +10,21 @@
     <main class="page-shell">
       <header class="hero">
         <div>
-          <p class="eyebrow">Ecommerce Attribution Agent</p>
+          <p class="eyebrow">电商经营归因智能体</p>
           <h1>BusinessInsight Agent</h1>
           <p class="subtitle">面向电商经营场景的智能归因与决策 Agent</p>
         </div>
         <div class="status-pill">
           <span class="status-dot"></span>
-          Local Demo
+          本地演示
         </div>
       </header>
 
-      <section class="workspace" aria-label="Agent demo workspace">
+      <section class="workspace" aria-label="Agent 演示工作区">
         <section class="panel input-panel" aria-labelledby="input-title">
           <div class="panel-heading">
             <h2 id="input-title">业务问题</h2>
-            <span>Natural language query</span>
+            <span>自然语言经营问题</span>
           </div>
 
           <label class="field-label" for="query-input">输入经营分析问题</label>
@@ -35,26 +35,40 @@
           </button>
 
           <div class="examples" aria-label="示例问题">
-            <button type="button" class="example-button">商品 P1001 最近 GMV 为什么下降？</button>
-            <button type="button" class="example-button">P1001 的退款率最近是不是异常？</button>
-            <button type="button" class="example-button">P1001 搜索渠道点击率为什么下降？</button>
-            <button type="button" class="example-button">商品 P1001 差评集中在哪些问题？</button>
+            <div class="example-group">
+              <h3>经营归因</h3>
+              <button type="button" class="example-button">商品 P1001 最近 GMV 为什么下降？</button>
+              <button type="button" class="example-button">P1001 退款率升高和 GMV 下滑是否有关？</button>
+            </div>
+            <div class="example-group">
+              <h3>商品级广告决策</h3>
+              <button type="button" class="example-button">商户 M001 应该优先推哪些商品做搜索广告？</button>
+              <button type="button" class="example-button">哪些团购套餐更适合作为 M001 的主推品？</button>
+              <button type="button" class="example-button">P1001 如果做主推品加价，合理出价区间是多少？</button>
+              <button type="button" class="example-button">P1001 加价 20% 投放后 ROI 是否还有保障？</button>
+            </div>
+            <div class="example-group">
+              <h3>Query-SKU 召回</h3>
+              <button type="button" class="example-button">用户搜索 水光补水 时，应该召回哪些商品，为什么？</button>
+              <button type="button" class="example-button">用户搜索 美甲款式 时，应该匹配哪些团购套餐？</button>
+              <button type="button" class="example-button">商品级广告相比 POI 级广告，在哪些场景更适合？</button>
+            </div>
           </div>
         </section>
 
         <section class="panel result-panel" aria-labelledby="result-title">
           <div class="panel-heading">
             <h2 id="result-title">诊断报告</h2>
-            <span id="run-status">Ready</span>
+            <span id="run-status">就绪</span>
           </div>
 
           <div class="meta-grid">
             <div>
-              <span>trace_id</span>
+              <span>链路追踪编号</span>
               <strong id="trace-id">-</strong>
             </div>
             <div>
-              <span>latency_ms</span>
+              <span>耗时</span>
               <strong id="latency">-</strong>
             </div>
           </div>
@@ -67,13 +81,172 @@
 
       <section class="debug-panel" aria-label="调试信息">
         <details>
-          <summary>tool_results</summary>
+          <summary>商品广告工具结果</summary>
+          <pre id="ad-results">{}</pre>
+        </details>
+        <details>
+          <summary>推荐与归因结果</summary>
+          <pre id="recommendation-results">{}</pre>
+        </details>
+        <details>
+          <summary>证据对齐信息</summary>
+          <pre id="evidence-alignment">{}</pre>
+        </details>
+        <details>
+          <summary>工具调用结果</summary>
           <pre id="tool-results">{}</pre>
         </details>
         <details>
-          <summary>retrieved_docs</summary>
+          <summary>检索证据文档</summary>
           <pre id="retrieved-docs">[]</pre>
         </details>
+      </section>
+
+      <section class="panel trace-dashboard" aria-labelledby="trace-dashboard-title">
+        <div class="panel-heading">
+          <div>
+            <h2 id="trace-dashboard-title">链路追踪可观测性看板</h2>
+            <span id="trace-stats-status">链路追踪统计</span>
+          </div>
+          <button id="refresh-trace-stats" class="secondary-button" type="button">
+            刷新链路追踪统计
+          </button>
+        </div>
+
+        <div class="stats-grid" aria-label="链路追踪汇总指标">
+          <div>
+            <span>链路追踪总数</span>
+            <strong id="stats-total-traces">-</strong>
+          </div>
+          <div>
+            <span>缓存命中率</span>
+            <strong id="stats-cache-hit-rate">-</strong>
+          </div>
+          <div>
+            <span>平均耗时</span>
+            <strong id="stats-avg-latency">-</strong>
+          </div>
+          <div>
+            <span>P95 耗时</span>
+            <strong id="stats-p95-latency">-</strong>
+          </div>
+          <div>
+            <span>错误率</span>
+            <strong id="stats-error-rate">-</strong>
+          </div>
+          <div>
+            <span>模型令牌总量</span>
+            <strong id="stats-total-tokens">-</strong>
+          </div>
+          <div>
+            <span>估算成本</span>
+            <strong id="stats-estimated-cost">-</strong>
+          </div>
+        </div>
+
+        <div class="trace-dashboard-grid">
+          <section aria-label="意图分布">
+            <h3>意图分布</h3>
+            <ul id="intent-distribution" class="compact-list">
+              <li>-</li>
+            </ul>
+          </section>
+
+          <section aria-label="模型 Provider 状态分布">
+            <h3>模型状态</h3>
+            <ul id="provider-status-distribution" class="compact-list">
+              <li>-</li>
+            </ul>
+          </section>
+
+          <section aria-label="链路追踪告警">
+            <h3>告警</h3>
+            <ul id="trace-alerts" class="compact-list">
+              <li>-</li>
+            </ul>
+          </section>
+
+          <section aria-label="最慢节点">
+            <h3>最慢节点排行</h3>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>节点</th>
+                    <th>次数</th>
+                    <th>平均耗时</th>
+                    <th>P95 耗时</th>
+                    <th>错误数</th>
+                  </tr>
+                </thead>
+                <tbody id="slowest-nodes">
+                  <tr>
+                    <td colspan="5">-</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section class="panel eval-dashboard" aria-labelledby="eval-dashboard-title">
+        <div class="panel-heading">
+          <div>
+            <h2 id="eval-dashboard-title">评测与消融实验</h2>
+            <span id="eval-status">评测就绪</span>
+          </div>
+          <div class="button-row">
+            <button id="run-full-eval" class="secondary-button" type="button">
+              运行完整评测
+            </button>
+            <button id="run-ablation-eval" class="secondary-button" type="button">
+              运行消融评测
+            </button>
+          </div>
+        </div>
+
+        <div class="stats-grid eval-summary" aria-label="评测汇总指标">
+          <div>
+            <span>平均得分</span>
+            <strong id="eval-avg-score">-</strong>
+          </div>
+          <div>
+            <span>证据命中率</span>
+            <strong id="eval-evidence-hit-rate">-</strong>
+          </div>
+          <div>
+            <span>平均耗时</span>
+            <strong id="eval-avg-latency">-</strong>
+          </div>
+          <div>
+            <span>P95 耗时</span>
+            <strong id="eval-p95-latency">-</strong>
+          </div>
+          <div>
+            <span>门禁结果</span>
+            <strong id="eval-gate">-</strong>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>模式</th>
+                <th>平均得分</th>
+                <th>证据命中率</th>
+                <th>平均耗时</th>
+                <th>相对完整链路变化</th>
+              </tr>
+            </thead>
+            <tbody id="eval-ablation-results">
+              <tr>
+                <td colspan="5">-</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </section>
     </main>
 

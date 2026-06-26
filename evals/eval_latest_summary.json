@@ -1,0 +1,27 @@
+{
+  "generated_at": "2026-06-26T17:55:57.292227+00:00",
+  "modes": {
+    "full_agent": {
+      "avg_score": 0.998412,
+      "intent_accuracy": 1.0,
+      "evidence_hit_rate": 1.0,
+      "avg_tool_result_key_coverage": 1.0,
+      "avg_ad_recommendation_fields": 1.0,
+      "avg_bid_guardrail": 1.0,
+      "avg_sku_recall_fields": 1.0,
+      "avg_claim_evidence_alignment": 1.0,
+      "avg_reflection_quality": 0.566667,
+      "security_flag_pass_rate": 1.0,
+      "avg_golden_answer_coverage": 1.0,
+      "avg_latency_ms": 7.76,
+      "p95_latency_ms": 39
+    }
+  },
+  "ablation_delta": {},
+  "threshold_check": {
+    "enabled": false,
+    "threshold": null,
+    "full_agent_avg_score": 0.998412,
+    "pass": true
+  }
+}

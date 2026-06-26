@@ -16,13 +16,19 @@ class FallbackService:
         """Return a non-crashing RAG result payload even when retrieval is empty."""
 
         if not result:
-            return {"query": query, "results": [], "evidence_summary": RAG_EMPTY_MESSAGE}
+            return {
+                "query": query,
+                "results": [],
+                "evidence_summary": RAG_EMPTY_MESSAGE,
+                "security_summary": {},
+            }
 
         results = result.get("results") or []
         return {
             "query": result.get("query", query),
             "results": results,
             "evidence_summary": result.get("evidence_summary") or RAG_EMPTY_MESSAGE,
+            "security_summary": result.get("security_summary", {}),
         }
 
     def generate_diagnosis_report(self, state: AgentState) -> str:
@@ -31,6 +37,7 @@ class FallbackService:
         metrics_failure_reason = self._metrics_failure_reason(state)
         evidence_summary = self._evidence_summary(state)
         product_label = state.entity_id or "目标商品"
+        query = state.safe_user_query or state.user_query
 
         if metrics_failure_reason:
             metric_section = (
@@ -54,7 +61,7 @@ class FallbackService:
 
         return (
             "## 问题概述\n"
-            f"本次分析对象为 {product_label}，用户问题是“{state.user_query}”。"
+            f"本次分析对象为 {product_label}，用户问题是“{query}”。"
             "当前使用规则模板生成降级诊断报告，确保系统在 LLM、RAG "
             "或指标工具不稳定时仍可返回可 review 的结果。\n\n"
             "## 指标拆解\n"
@@ -74,6 +81,9 @@ class FallbackService:
 
     def _metrics_failure_reason(self, state: AgentState) -> str:
         """Extract metrics tool failure messages from Agent errors."""
+
+        if state.tool_results.get("metrics_disabled"):
+            return "Metrics Tool 已在当前 eval/ablation 模式中禁用，缺少确定性指标证据"
 
         failures = [
             error.get("error", "")

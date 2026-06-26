@@ -56,6 +56,20 @@ def test_list_traces_returns_recent_records() -> None:
     assert any(trace["trace_id"] == result["trace_id"] for trace in traces)
 
 
+def test_trace_stats_aggregate_recent_records() -> None:
+    """TraceService should aggregate latency, intent, cache, and node stats."""
+
+    initialize_database()
+    run_agent("商品 P1001 最近 GMV 为什么下降？")
+
+    stats = TraceService().get_trace_stats(limit=20)
+
+    assert stats["trace_count"] >= 1
+    assert stats["avg_latency_ms"] >= 0
+    assert "business_diagnosis" in stats["intent_counts"]
+    assert "intent_router_node" in stats["node_latency_ms"]
+
+
 def test_initialize_database_preserves_existing_trace_rows(tmp_path) -> None:
     """Seed-data reinitialization should not drop agent_traces."""
 

@@ -34,6 +34,9 @@ jobs:
       - name: Pytest
         run: pytest
 
+      - name: Eval gate
+        run: python -m evals.run_eval --mode full_agent --fail-under 0.60
+
       - name: Docker build
         run: docker build -t business-insight-agent:ci .
 

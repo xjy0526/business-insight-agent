@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0",
+  "label_guidance": {
+    "answer_quality": "1-5 分，评估最终报告是否回答了业务问题且表达清晰。",
+    "evidence_quality": "1-5 分，评估关键结论是否能追溯到工具结果或 RAG 证据。",
+    "hallucination_risk": "low/medium/high，标记是否存在无证据断言。"
+  },
+  "labels": [
+    {
+      "case_id": "gmv_drop_p1001",
+      "annotator": "example",
+      "answer_quality": 5,
+      "evidence_quality": 5,
+      "hallucination_risk": "low",
+      "notes": "示例人工标注，真实项目中可由业务同学或面试演示者维护。"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+merchant_id,poi_id,campaign_id,campaign_type,impressions,clicks,orders,revenue,ad_cost,ctr,cvr,roi,notes
+M001,POI001,CMP001_POI,poi_level,52000,3380,372,94500,28600,0.0650,0.1101,3.30,门店级广告覆盖泛皮肤管理需求
+M001,POI001,CMP001_SKU,product_level,41000,3567,515,139260,38400,0.0870,0.1444,3.63,商品级广告承接水光补水和小气泡等明确服务需求
+M001,POI001,CMP001_SMART,product_level_with_smart_bid,43000,3978,612,160140,42000,0.0925,0.1538,3.81,智能调价限制低 ROI 流量并保留高意向 Query
+M002,POI002,CMP002_POI,poi_level,36000,2340,246,33520,9100,0.0650,0.1051,3.68,门店级广告覆盖美甲美睫泛需求
+M002,POI002,CMP002_SKU,product_level,31000,3038,471,60120,13500,0.0980,0.1550,4.45,商品级广告突出日式美甲和自然款美睫
+M002,POI002,CMP002_SMART,product_level_with_smart_bid,32500,3283,535,68480,14850,0.1010,0.1630,4.61,智能调价优先保留高转化服务词
+M003,POI003,CMP003_POI,poi_level,68000,4080,420,78960,23600,0.0600,0.1029,3.35,门店级广告覆盖周边餐饮需求
+M003,POI003,CMP003_SKU,product_level,54000,4752,626,117688,31500,0.0880,0.1317,3.74,商品级广告更适合双人套餐等高意向 Query
+M003,POI003,CMP003_SMART,product_level_with_smart_bid,56000,5040,690,129720,33800,0.0900,0.1369,3.84,智能调价控制低峰时段低效点击

@@ -7,6 +7,7 @@ from app.tools.metrics_tool import (
     analyze_channel_breakdown,
     calculate_gmv,
     calculate_refund_rate,
+    decompose_gmv_contribution,
 )
 from app.tools.sql_tool import execute_readonly_query
 
@@ -47,6 +48,25 @@ def test_p1001_april_search_ctr_decreases_from_march() -> None:
     april_search = next(row for row in april_channels["channels"] if row["channel"] == "search")
 
     assert april_search["ctr"] < march_search["ctr"]
+
+
+def test_gmv_contribution_decomposes_driver_delta() -> None:
+    """GMV contribution tool should expose driver-level attribution."""
+
+    result = decompose_gmv_contribution(
+        "P1001",
+        "2026-04-01",
+        "2026-04-30",
+        "2026-03-01",
+        "2026-03-31",
+    )
+
+    drivers = {item["driver"] for item in result["driver_contributions"]}
+
+    assert drivers == {"exposure", "ctr", "cvr", "aov"}
+    assert result["actual_delta"] < 0
+    assert result["factor_effects"]
+    assert result["top_negative_factors"]
 
 
 def test_sql_tool_rejects_delete_statement() -> None:

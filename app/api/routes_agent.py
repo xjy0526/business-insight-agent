@@ -42,8 +42,12 @@ def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
     payload = {
         "trace_id": result["trace_id"],
         "intent": result.get("intent", ""),
+        "runner": result.get("runner", "sequential"),
         "answer": result["final_answer"],
         "tool_results": result.get("tool_results", {}),
+        "ad_results": result.get("ad_results", {}),
+        "recommendation_result": result.get("recommendation_result", {}),
+        "evidence_alignment": result.get("evidence_alignment", {}),
         "retrieved_docs": result.get("retrieved_docs", []),
         "latency_ms": latency_ms,
         "cached": False,

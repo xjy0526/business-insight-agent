@@ -64,6 +64,76 @@ TABLE_SCHEMAS = {
             discount_rule TEXT NOT NULL
         )
     """,
+    "local_ad_sku_candidates": """
+        CREATE TABLE local_ad_sku_candidates (
+            merchant_id TEXT NOT NULL,
+            poi_id TEXT NOT NULL,
+            product_id TEXT PRIMARY KEY,
+            product_name TEXT NOT NULL,
+            category TEXT NOT NULL,
+            service_type TEXT NOT NULL,
+            price REAL NOT NULL,
+            cvr REAL NOT NULL,
+            gmv_share REAL NOT NULL,
+            pcvr REAL NOT NULL,
+            historical_roi REAL NOT NULL,
+            margin_rate REAL NOT NULL,
+            available_slots INTEGER NOT NULL,
+            rating REAL NOT NULL,
+            refund_rate REAL NOT NULL,
+            keyword_coverage REAL NOT NULL,
+            is_current_bestseller TEXT NOT NULL
+        )
+    """,
+    "query_sku_recall": """
+        CREATE TABLE query_sku_recall (
+            query TEXT NOT NULL,
+            product_id TEXT NOT NULL,
+            product_name TEXT NOT NULL,
+            merchant_id TEXT NOT NULL,
+            poi_id TEXT NOT NULL,
+            recall_path TEXT NOT NULL,
+            recall_score REAL NOT NULL,
+            matched_terms TEXT NOT NULL,
+            query_intent TEXT NOT NULL
+        )
+    """,
+    "ad_bid_experiments": """
+        CREATE TABLE ad_bid_experiments (
+            experiment_id TEXT PRIMARY KEY,
+            merchant_id TEXT NOT NULL,
+            poi_id TEXT NOT NULL,
+            product_id TEXT NOT NULL,
+            bid_multiplier REAL NOT NULL,
+            cpc REAL NOT NULL,
+            impressions INTEGER NOT NULL,
+            clicks INTEGER NOT NULL,
+            orders INTEGER NOT NULL,
+            revenue REAL NOT NULL,
+            ad_cost REAL NOT NULL,
+            ctr REAL NOT NULL,
+            cvr REAL NOT NULL,
+            roi REAL NOT NULL,
+            group_name TEXT NOT NULL
+        )
+    """,
+    "poi_level_ads_baseline": """
+        CREATE TABLE poi_level_ads_baseline (
+            merchant_id TEXT NOT NULL,
+            poi_id TEXT NOT NULL,
+            campaign_id TEXT PRIMARY KEY,
+            campaign_type TEXT NOT NULL,
+            impressions INTEGER NOT NULL,
+            clicks INTEGER NOT NULL,
+            orders INTEGER NOT NULL,
+            revenue REAL NOT NULL,
+            ad_cost REAL NOT NULL,
+            ctr REAL NOT NULL,
+            cvr REAL NOT NULL,
+            roi REAL NOT NULL,
+            notes TEXT NOT NULL
+        )
+    """,
 }
 
 CSV_TABLES = {
@@ -72,6 +142,10 @@ CSV_TABLES = {
     "traffic": "traffic.csv",
     "reviews": "reviews.csv",
     "campaigns": "campaigns.csv",
+    "local_ad_sku_candidates": "local_ad_sku_candidates.csv",
+    "query_sku_recall": "query_sku_recall.csv",
+    "ad_bid_experiments": "ad_bid_experiments.csv",
+    "poi_level_ads_baseline": "poi_level_ads_baseline.csv",
 }
 
 

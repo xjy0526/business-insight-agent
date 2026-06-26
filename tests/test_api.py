@@ -26,6 +26,7 @@ def test_agent_analyze_returns_answer() -> None:
     data = response.json()
     assert data["trace_id"]
     assert data["intent"] == "business_diagnosis"
+    assert data["runner"] == "sequential"
     assert "GMV" in data["answer"]
     assert data["tool_results"]
     assert data["retrieved_docs"]
@@ -111,6 +112,38 @@ def test_metrics_compare_returns_result() -> None:
     assert "gmv" in data["changes"]
 
 
+def test_metrics_extra_tool_endpoints_return_results() -> None:
+    """Metric API should expose GMV contribution, review topics, and campaigns."""
+
+    client = TestClient(app)
+    common_params = {
+        "current_start": "2026-04-01",
+        "current_end": "2026-04-30",
+        "baseline_start": "2026-03-01",
+        "baseline_end": "2026-03-31",
+    }
+    contribution = client.get(
+        "/api/metrics/product/P1001/gmv-contribution",
+        params=common_params,
+    )
+    reviews = client.get(
+        "/api/metrics/product/P1001/reviews/topics",
+        params={"start_date": "2026-04-01", "end_date": "2026-04-30"},
+    )
+    campaigns = client.get(
+        "/api/metrics/product/P1001/campaigns",
+        params={"start_date": "2026-04-01", "end_date": "2026-04-30"},
+    )
+
+    assert contribution.status_code == 200
+    assert reviews.status_code == 200
+    assert campaigns.status_code == 200
+    assert contribution.json()["driver_contributions"]
+    assert reviews.json()["topics"]
+    assert campaigns.json()["participation_status"] == "insufficient"
+    assert campaigns.json()["risk_level"] == "high"
+
+
 def test_metrics_compare_returns_404_for_unknown_product() -> None:
     """Unknown product IDs should return a clear API error."""
 
@@ -188,6 +221,23 @@ def test_trace_endpoints_return_saved_trace() -> None:
     assert get_response.json()["node_spans"]
 
 
+def test_trace_stats_endpoint_returns_aggregate_metrics() -> None:
+    """Trace stats endpoint should summarize recent runs."""
+
+    client = TestClient(app)
+    client.post(
+        "/api/agent/analyze",
+        json={"query": "商品 P1001 最近 GMV 为什么下降？", "use_cache": False},
+    )
+
+    response = client.get("/api/traces/stats", params={"limit": 20})
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data["trace_count"] >= 1
+    assert "node_latency_ms" in data
+
+
 def test_eval_run_endpoint_returns_overall_metrics() -> None:
     """Eval endpoint should run cases and return aggregate metrics."""
 
@@ -199,4 +249,5 @@ def test_eval_run_endpoint_returns_overall_metrics() -> None:
     assert data["status"] == "completed"
     assert data["case_count"] >= 5
     assert "avg_score" in data["overall_metrics"]
+    assert "gate" in data
     assert len(data["case_results"]) >= 5

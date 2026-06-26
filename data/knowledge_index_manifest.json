@@ -1,0 +1,81 @@
+{
+  "generated_at": "2026-06-26T17:55:56.992029+00:00",
+  "backend": "tfidf",
+  "embedding_provider": "local_hashing",
+  "embedding_model": "hashing-char-ngram",
+  "document_count": 10,
+  "chunk_count": 14,
+  "sources": [
+    {
+      "source": "after_sales_policy.md",
+      "doc_id": "after_sales_policy",
+      "content_sha256": "6c73b6e4075edeeb9ba3b5820909ad0eed2a49c5ea37a0287b3ac3e7c934a7e5",
+      "char_count": 516,
+      "chunk_count": 2
+    },
+    {
+      "source": "bid_roi_guardrail_guide.md",
+      "doc_id": "bid_roi_guardrail_guide",
+      "content_sha256": "6a3125d5e1fa24f5eb7e6ac27348f16ae6f2311aba35bbca60541ad96b1988a7",
+      "char_count": 395,
+      "chunk_count": 1
+    },
+    {
+      "source": "campaign_rules.md",
+      "doc_id": "campaign_rules",
+      "content_sha256": "4cc1519ce6abef26da20abe063f34502a0bd9ac774d7165d42da6361873906f4",
+      "char_count": 536,
+      "chunk_count": 2
+    },
+    {
+      "source": "local_commerce_growth_playbook.md",
+      "doc_id": "local_commerce_growth_playbook",
+      "content_sha256": "20a0f17c2fa9336452305990bae70f98186be7811b1003951661ea6001bf1a20",
+      "char_count": 280,
+      "chunk_count": 1
+    },
+    {
+      "source": "poi_vs_product_ad_guide.md",
+      "doc_id": "poi_vs_product_ad_guide",
+      "content_sha256": "79b186636a4203119c39bbff92275aaf09e6917658ed0eeff3ac1bc248dbbb47",
+      "char_count": 274,
+      "chunk_count": 1
+    },
+    {
+      "source": "product_ad_strategy_guide.md",
+      "doc_id": "product_ad_strategy_guide",
+      "content_sha256": "dcba3330dcf4b12f0334dcd72bd13c1e61b11233ad1b702391ef9d1b3f3ace06",
+      "char_count": 381,
+      "chunk_count": 1
+    },
+    {
+      "source": "product_operation_guide.md",
+      "doc_id": "product_operation_guide",
+      "content_sha256": "3a85dde235b8bf27a44020e350af79009533d46c0567a8392b54bfaeca752990",
+      "char_count": 611,
+      "chunk_count": 2
+    },
+    {
+      "source": "query_sku_recall_guide.md",
+      "doc_id": "query_sku_recall_guide",
+      "content_sha256": "e9f88ddcbcd98dd672e16c66cabe91ad054bd49f4cbbc8fb387ba3b987ad9e69",
+      "char_count": 366,
+      "chunk_count": 1
+    },
+    {
+      "source": "review_analysis_guide.md",
+      "doc_id": "review_analysis_guide",
+      "content_sha256": "731dbb2bf3b50c94b28c0cc3573bdd553219286cf3f5c09f030477576ad353e1",
+      "char_count": 573,
+      "chunk_count": 2
+    },
+    {
+      "source": "sku_mining_guide.md",
+      "doc_id": "sku_mining_guide",
+      "content_sha256": "b47c334705ed5dec369f1d5de1a8b0ed06994380c4c4958f3dba0cc0f5af5a88",
+      "char_count": 347,
+      "chunk_count": 1
+    }
+  ],
+  "fingerprint": "5c9988fbd7fcb691996bb5960ec0b6bb5330605307327a4a3c0148ba4b6e5675"
+}

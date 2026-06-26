@@ -9,6 +9,17 @@ from sklearn.feature_extraction.text import HashingVectorizer, TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.preprocessing import normalize
 
+from app.config import get_settings
+
+try:  # pragma: no cover - import fallback is covered through factory behavior.
+    import openai
+except ImportError:  # pragma: no cover
+    openai = None  # type: ignore[assignment]
+
+
+DEFAULT_QWEN_EMBEDDING_BASE_URL = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+REAL_EMBEDDING_BACKENDS = {"embedding", "openai_embedding", "qwen_embedding"}
+
 
 @dataclass
 class TfidfVectorStore:
@@ -17,6 +28,8 @@ class TfidfVectorStore:
     chunks: list[dict[str, Any]] = field(default_factory=list)
     vectorizer: TfidfVectorizer | None = None
     matrix: Any = None
+    backend_name: str = "tfidf"
+    embedding_provider: str = "local_tfidf"
 
     def build_index(self, chunks: list[dict[str, Any]]) -> TfidfVectorStore:
         """Build a TF-IDF index from text chunks."""
@@ -65,6 +78,8 @@ class FaissVectorStore:
     chunks: list[dict[str, Any]] = field(default_factory=list)
     vectorizer: HashingVectorizer | None = None
     index: Any = None
+    backend_name: str = "faiss"
+    embedding_provider: str = "local_hashing"
 
     def build_index(self, chunks: list[dict[str, Any]]) -> FaissVectorStore:
         """Build a FAISS index if faiss is installed, otherwise fail clearly."""
@@ -125,6 +140,8 @@ class ChromaVectorStore:
 
     chunks: list[dict[str, Any]] = field(default_factory=list)
     collection: Any = None
+    backend_name: str = "chroma"
+    embedding_provider: str = "chroma_default"
 
     def build_index(self, chunks: list[dict[str, Any]]) -> ChromaVectorStore:
         """Build an in-memory Chroma collection when chromadb is installed."""
@@ -177,12 +194,123 @@ class ChromaVectorStore:
         return results
 
 
+@dataclass
+class OpenAIEmbeddingVectorStore:
+    """OpenAI-compatible embedding backend with TF-IDF fallback at caller boundary."""
+
+    chunks: list[dict[str, Any]] = field(default_factory=list)
+    embeddings: list[list[float]] = field(default_factory=list)
+    backend_name: str = "embedding"
+    embedding_provider: str = "openai_compatible"
+    model: str = ""
+
+    def build_index(self, chunks: list[dict[str, Any]]) -> OpenAIEmbeddingVectorStore:
+        """Build an in-memory vector index from provider embeddings."""
+
+        settings = get_settings()
+        self.chunks = chunks
+        self.embedding_provider = settings.rag_embedding_provider
+        self.model = settings.rag_embedding_model
+        if not chunks:
+            self.embeddings = []
+            return self
+        self.embeddings = self._embed_texts([chunk["content"] for chunk in chunks])
+        return self
+
+    def search(self, query: str, top_k: int = 5) -> list[dict[str, Any]]:
+        """Search provider embeddings with cosine similarity."""
+
+        if top_k <= 0 or not self.chunks or not self.embeddings:
+            return []
+
+        query_embedding = self._embed_texts([query])[0]
+        scores = cosine_similarity([query_embedding], self.embeddings).flatten()
+        ranked_indices = scores.argsort()[::-1][:top_k]
+
+        results: list[dict[str, Any]] = []
+        for index in ranked_indices:
+            chunk = self.chunks[int(index)]
+            results.append(
+                {
+                    "chunk_id": chunk["chunk_id"],
+                    "source": chunk["source"],
+                    "content": chunk["content"],
+                    "score": round(float(scores[int(index)]), 6),
+                }
+            )
+        return results
+
+    def _embed_texts(self, texts: list[str]) -> list[list[float]]:
+        """Call an OpenAI-compatible embeddings endpoint."""
+
+        if openai is None:
+            raise RuntimeError("openai package is unavailable for embedding backend.")
+
+        settings = get_settings()
+        api_key = settings.rag_embedding_api_key or settings.llm_api_key
+        if not api_key:
+            raise RuntimeError("RAG embedding API key is not configured.")
+
+        client_kwargs: dict[str, Any] = {
+            "api_key": api_key,
+            "timeout": settings.rag_embedding_timeout,
+            "max_retries": settings.llm_max_retries,
+        }
+        base_url = _resolve_embedding_base_url(
+            provider=settings.rag_embedding_provider,
+            configured_base_url=settings.rag_embedding_base_url or settings.llm_base_url,
+        )
+        if base_url:
+            client_kwargs["base_url"] = base_url.rstrip("/")
+
+        client = openai.OpenAI(**client_kwargs)
+        response = client.embeddings.create(
+            model=settings.rag_embedding_model,
+            input=texts,
+            timeout=settings.rag_embedding_timeout,
+        )
+        embeddings = _extract_embedding_vectors(response)
+        if len(embeddings) != len(texts):
+            raise RuntimeError("Embedding response size does not match input size.")
+        return embeddings
+
+
+def _resolve_embedding_base_url(provider: str, configured_base_url: str | None) -> str | None:
+    """Resolve provider-specific default base_url without overriding explicit config."""
+
+    if configured_base_url:
+        return configured_base_url
+    if provider.lower() in {"qwen", "dashscope"}:
+        return DEFAULT_QWEN_EMBEDDING_BASE_URL
+    return None
+
+
+def _extract_embedding_vectors(response: Any) -> list[list[float]]:
+    """Read embeddings from SDK or fake-client responses."""
+
+    data = getattr(response, "data", None)
+    if data is None and isinstance(response, dict):
+        data = response.get("data", [])
+
+    vectors: list[list[float]] = []
+    for item in data or []:
+        vector = getattr(item, "embedding", None)
+        if vector is None and isinstance(item, dict):
+            vector = item.get("embedding")
+        if not isinstance(vector, list):
+            raise RuntimeError("Embedding response contains invalid vector data.")
+        vectors.append([float(value) for value in vector])
+    return vectors
+
+
 def create_vector_store(
     backend: str = "tfidf",
-) -> TfidfVectorStore | FaissVectorStore | ChromaVectorStore:
+) -> TfidfVectorStore | FaissVectorStore | ChromaVectorStore | OpenAIEmbeddingVectorStore:
     """Create the requested vector store and fall back to TF-IDF if unavailable."""
 
     normalized_backend = backend.lower()
+    if normalized_backend in REAL_EMBEDDING_BACKENDS:
+        return OpenAIEmbeddingVectorStore()
     if normalized_backend == "faiss":
         return FaissVectorStore()
     if normalized_backend == "chroma":
