@@ -365,7 +365,9 @@ def build_eval_summary(
         mode_name: _compact_mode_metrics(result)
         for mode_name, result in mode_results.items()
     }
-    full_result = mode_results.get("full_agent") or next(iter(mode_results.values()), {})
+    full_result = mode_results.get("full_agent")
+    if full_result is None:
+        full_result = next(iter(mode_results.values()), {})
     full_score = modes.get("full_agent", {}).get("avg_score", 0.0)
     threshold_check = {
         "enabled": fail_under is not None,
