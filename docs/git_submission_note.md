@@ -1,7 +1,7 @@
 # GitHub 提交说明
 
-- 本仓库为忻纪元本人课程设计 GitHub 项目提交。
-- 项目基于本人已有 `business-insight-agent` 仓库继续迭代。
+- 本仓库为忻纪元课程设计 GitHub 项目提交。
+- 项目基于 `business-insight-agent` 代码框架继续迭代。
 - 当前提交分支：`course-design-product-ad-agent-hardening`。
 - 最新 hardening commit message：`fix(course): harden product ad agent evaluation and submission artifacts`。
 - 最新 eval case_count：44。
@@ -28,4 +28,4 @@
 - 课程报告 `docs/course_report.md`。
 - README / README_COURSE 中的运行命令和最新 evaluation 结果。
 
-本次 hardening commit 主要修复课程提交材料、Notebook 执行输出、Eval 可信度、ROI guardrail、Query-SKU 融合排序、实体解析、数据校验和文档一致性。该仓库为忻纪元本人课程设计 GitHub 项目提交，所有数据均为 synthetic demo data，不包含任何公司内部数据。
+本次 hardening commit 主要修复课程提交材料、Notebook 执行输出、Eval 可信度、ROI guardrail、Query-SKU 融合排序、实体解析、数据校验和文档一致性。该仓库为忻纪元课程设计 GitHub 项目提交，所有数据均为 synthetic demo data，不涉及真实平台、真实商户、真实用户或敏感业务信息。

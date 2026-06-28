@@ -1,6 +1,6 @@
 # 摘要
 
-本文设计并实现了一个面向本地生活商户的商品级广告增长决策 Agent。系统基于 Tool Calling 与 RAG，将经营归因、主推品挖掘、Query-SKU 召回、ROI 出价守护和证据约束型报告生成整合在同一条可观测工作流中。项目使用 synthetic demo data，不包含任何公司内部数据、真实商户数据或敏感业务策略。
+本文设计并实现了一个面向本地生活商户的商品级广告增长决策 Agent。系统基于 Tool Calling 与 RAG，将经营归因、主推品挖掘、Query-SKU 召回、ROI 出价守护和证据约束型报告生成整合在同一条可观测工作流中。项目使用 synthetic demo data，不涉及真实平台、真实商户、真实用户或敏感业务信息。
 
 # 背景
 
@@ -150,7 +150,7 @@ threshold gate：`enabled=true`，`threshold=0.70`，`pass=true`。
 
 `P1001 退款率偏高但 GMV 占比高，还应该提高出价吗？` 会同时调用 metrics 和 product_ad 工具，将 GMV 占比与退款率风险放在同一证据表中，输出谨慎建议。
 
-主要误差来源包括 synthetic data 与真实业务分布差异、Query 解析规则较简单、Product Growth Score 权重为课程展示设定、召回模拟未接入真实线上向量库，以及 Eval 中关键词/结构化指标无法完全替代人工业务评审。
+主要误差来源包括 synthetic data 与实际线上分布差异、Query 解析规则较简单、Product Growth Score 权重为课程展示设定、召回模拟未接入线上向量库，以及 Eval 中关键词/结构化指标无法完全替代人工评审。
 
 # 贡献说明
 
@@ -161,7 +161,7 @@ threshold gate：`enabled=true`，`threshold=0.70`，`pass=true`。
 - 增强 hard case eval，加入数值正确性、默认实体泄漏和不确定性表达检查。
 - 新增数据卡、模型卡、Notebook 执行脚本、Makefile、CI hardening 和课程提交说明。
 
-本仓库为忻纪元本人课程设计 GitHub 项目提交，所有新增数据均为 synthetic demo data，不包含任何公司内部数据。
+本仓库为忻纪元课程设计 GitHub 项目提交，所有新增数据均为 synthetic demo data，不涉及真实平台、真实商户、真实用户或敏感业务信息。
 
 # 未来工作
 

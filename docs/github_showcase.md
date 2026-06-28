@@ -12,7 +12,7 @@
 6. 运行 `python -m evals.run_eval --all-modes --fail-under 0.70`，展示 eval case 和阈值门禁。
 7. 运行 `python -m evals.run_eval --all-modes`，说明 RAG、Metrics、Review/Campaign、Reflection 和 mock/fallback 的组件贡献。
 
-## 面试时可以强调的亮点
+## 答辩时可以强调的亮点
 
 - 指标数字不由 LLM 生成，而由确定性工具计算。
 - RAG 只作为业务证据，不替代指标事实。

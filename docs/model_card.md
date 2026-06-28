@@ -17,7 +17,7 @@ BusinessInsight Agent 不是端到端大模型自动决策系统，而是 Tool C
 
 ## 适用场景
 
-- 课程设计答辩、GitHub 项目展示、面试工程讲解。
+- 课程设计答辩、GitHub 项目展示、工程方案讲解。
 - 演示 Agentic workflow、Tool Calling、RAG、Eval、Trace、Ablation 和 deterministic fallback。
 - 使用 synthetic demo data 说明本地生活商品级广告增长决策抽象。
 
@@ -25,7 +25,7 @@ BusinessInsight Agent 不是端到端大模型自动决策系统，而是 Tool C
 
 - 真实商户投放决策。
 - 真实预算分配、线上竞价、智能调价生产策略。
-- 任何需要真实公司内部数据、实时竞价数据或线上实验结论的场景。
+- 任何需要真实平台数据、实时竞价数据或线上实验结论的场景。
 
 ## 风险与限制
 

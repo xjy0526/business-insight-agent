@@ -176,7 +176,7 @@ Eval cases 位于 `evals/eval_cases.json`，当前共 20 个 case。单 case 指
 
 4. Metrics Tool 已有 GMV 贡献度分解，但口径仍是轻量估算。
    - 当前状态：使用曝光、CTR、CVR、AOV 的 Shapley-style driver 分解，并保留 residual。
-   - 后续建议：支持渠道级贡献、价格/活动/退款影响拆分，以及真实业务口径配置。
+   - 后续建议：支持渠道级贡献、价格/活动/退款影响拆分，以及线上口径配置。
 
 5. 评论分析已有专门 Review Tool，但主题体系仍是规则词典。
    - 当前状态：支持负面评论主题、样例评论、负面率和评分分布。

@@ -8,7 +8,7 @@
 
 英文题目：Product-level Advertising Growth Agent for Local Commerce Merchants: Tool-augmented RAG for SKU Mining, Query-SKU Recall and ROI Guardrails.
 
-本仓库为忻纪元本人课程设计 GitHub 项目提交。项目基于已有 `business-insight-agent` 仓库继续迭代，所有新增数据均为 synthetic demo data，不包含任何公司内部数据、真实商户数据或敏感业务策略。
+本仓库为忻纪元课程设计 GitHub 项目提交。项目基于公开可运行的 `business-insight-agent` 代码框架进行课程场景扩展，所有新增数据均为 synthetic demo data，不涉及真实平台、真实商户、真实用户或敏感业务信息。
 
 ## 2. 研究背景
 
@@ -26,9 +26,9 @@
 
 该问题属于平台经济中的商户增长、广告匹配效率、搜索广告机制设计和数据驱动经营决策问题。平台通过更细粒度的商品级匹配提升搜索流量分发效率，商户通过可解释的主推品选择和 ROI 守护降低投放风险。
 
-## 5. 与实习抽象能力的对应关系
+## 5. 与能力的对应关系
 
-| 美团实习抽象能力 | 项目模块 |
+| 抽象能力 | 项目模块 |
 | --- | --- |
 | 主推品/爆品挖掘 | `mine_high_value_products`, Product Growth Score |
 | PCVR、售价、历史 ROI 的出价约束 | `recommend_bid_range`, `simulate_bid_strategy` |
@@ -37,7 +37,7 @@
 | CTR、CVR、订单、ROI 实验评估 | `ad_bid_experiments`, `poi_level_ads_baseline` |
 | 工程化评测与可观测性 | `evals/`, `TraceService`, ablation suite |
 
-本项目不是复刻任何公司内部系统，而是对本地生活商品级广告场景中通用方法的公开数据抽象实现。
+本项目是对本地生活商品级广告场景中通用方法的课程抽象实现，仅用于课程展示、方法验证和工程练习。
 
 ## 6. 方法框架
 
@@ -95,7 +95,7 @@ final_score =
 
 ## 9. 数据说明
 
-所有新增数据均为 synthetic demo data，覆盖本地生活商户、团购套餐、服务项目、广告实验、Query-SKU 召回和 POI 级广告对比。不包含真实公司内部数据、真实商户数据或敏感业务信息。
+所有新增数据均为 synthetic demo data，覆盖本地生活商户、团购套餐、服务项目、广告实验、Query-SKU 召回和 POI 级广告对比。不涉及真实平台、真实商户、真实用户或敏感业务信息。
 
 更多说明见 [docs/data_card.md](docs/data_card.md) 和 [docs/model_card.md](docs/model_card.md)。
 
@@ -135,4 +135,4 @@ make course-check
 python scripts/execute_notebook.py
 ```
 
-本仓库为忻纪元本人课程设计 GitHub 项目提交。项目新增商品级广告增长决策、主推品挖掘、Query-SKU 召回、ROI 出价守护、广告投放评测、课程 Notebook 和报告草稿。所有数据均为 synthetic demo data，不包含任何公司内部数据。
+本仓库为忻纪元课程设计 GitHub 项目提交。项目新增商品级广告增长决策、主推品挖掘、Query-SKU 召回、ROI 出价守护、广告投放评测、课程 Notebook 和报告草稿。所有数据均为 synthetic demo data，不涉及真实平台、真实商户、真实用户或敏感业务信息。
