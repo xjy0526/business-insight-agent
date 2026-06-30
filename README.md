@@ -10,7 +10,7 @@
 ![ruff](https://img.shields.io/badge/ruff-linted-D7FF64)
 ![mypy](https://img.shields.io/badge/mypy-checked-2A6DB2)
 
-本分支基于本人已有 `business-insight-agent` 项目继续迭代，课程新增商品级广告增长决策能力，
+本项目具有商品级广告增长决策能力，
 包括主推品挖掘、Query-SKU 召回、ROI 出价守护、投放策略报告、Eval/Ablation 和课程 Notebook。
 
 项目定位保持为：
@@ -27,12 +27,11 @@ RAG 文档提供抽象策略知识。
 
 ## Original Business Diagnosis Capabilities
 
-原 `BusinessInsight Agent` 不是普通聊天机器人，也不是把问题直接丢给 LLM 的套壳 Demo。
+`BusinessInsight Agent` 不是普通聊天机器人，也不是把问题直接丢给 LLM 的套壳 Demo。
 它模拟经营分析场景：用户问“商品 P1001 最近 GMV 为什么下降？”，系统会识别意图、规划任务、
 调用确定性工具、检索业务知识、生成结构化报告、做证据校验，并把全过程写入 Trace 与 Eval。
 
-课程版本在保留 GMV 下滑、退款率异常、CTR/CVR 异常、渠道波动等归因能力的基础上，
-新增主推品挖掘、Query-SKU 召回、ROI 出价守护和投放策略报告。
+在具有 GMV 下滑、退款率异常、CTR/CVR 异常、渠道波动等归因能力的基础上，更新主推品挖掘、Query-SKU 召回、ROI 出价守护和投放策略报告。
 
 核心设计原则是：关键数字由工具计算，LLM 负责理解、组织和表达；
 RAG 提供业务规则证据，但不覆盖系统指令；
@@ -406,7 +405,3 @@ business-insight-agent/
 - 扩展经营场景：库存异常、竞品价格冲击、渠道投放 ROI、会员复购下降。
 - 将 Eval 接入更大规模人工标注集、golden answer diff 和线上历史趋势对比。
 - 将 Trace Stats 对接企业告警平台，增加 token 成本预算和 provider 异常通知。
-
-## License
-
-当前仓库尚未声明开源 License。正式公开前建议补充 `LICENSE` 文件；如用于课程展示，可先在仓库说明中标注仅用于学习与课程项目展示。
