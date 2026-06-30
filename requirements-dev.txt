@@ -1,5 +1,6 @@
 ruff==0.8.4
 mypy==1.14.1
 nbclient==0.10.2
+nbformat==5.10.4
 ipykernel==6.29.5
 types-redis==4.6.0.20241004

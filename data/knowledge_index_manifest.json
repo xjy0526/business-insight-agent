@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-30T11:12:36.086412+00:00",
+  "generated_at": "2026-06-30T14:18:05.913147+00:00",
   "backend": "tfidf",
   "embedding_provider": "local_hashing",
   "embedding_model": "hashing-char-ngram",
