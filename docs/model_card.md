@@ -2,9 +2,14 @@
 
 ## 系统类型
 
-BusinessInsight Agent 不是端到端大模型自动决策系统，而是 Tool Calling + RAG + deterministic scorer + report generation 的课程设计系统。
+BusinessInsight Agent 的课程版本不是端到端大模型自动决策系统。
+它是 Tool Calling + RAG + deterministic scorer + report generation 的课程设计系统。
 
-关键数字由 SQLite 工具计算，包括 GMV、CTR、CVR、退款率、Product Growth Score、Query-SKU recall score、CPC 上限和 ROI guardrail。LLM 或 mock LLM 只负责意图理解、报告组织和表达，不允许覆盖工具计算出的事实数字。
+关键数字由 SQLite 工具计算，包括 GMV、CTR、CVR、退款率、
+Product Growth Score、Query-SKU recall score、CPC 上限和 ROI guardrail。
+
+LLM 或 mock LLM 只负责意图理解、报告组织和表达，
+不允许覆盖工具计算出的事实数字。
 
 ## 决策链路
 
@@ -15,10 +20,20 @@ BusinessInsight Agent 不是端到端大模型自动决策系统，而是 Tool C
 5. `Report Generator` 生成结构化中文报告，并标注不确定性。
 6. `Reflection Checker` 做证据一致性、数字一致性和绝对化表达检查。
 
+## Reflection 作用
+
+Reflection Checker 主要用于 trace/evidence repair/safety audit。
+在当前 deterministic demo 中，报告模板和工具输出已经较稳定，
+因此它对主分数的提升可能有限。
+
+在真实 LLM 输出更自由的场景中，Reflection 更重要：
+它可以发现缺少证据的 claim、工具数字不一致、绝对化表达和安全风险，
+并触发补证或降级。
+
 ## 适用场景
 
 - 课程设计答辩、GitHub 项目展示、工程方案讲解。
-- 演示 Agentic workflow、Tool Calling、RAG、Eval、Trace、Ablation 和 deterministic fallback。
+- 演示 Agentic workflow、Tool Calling、RAG、Eval、Trace、Ablation 和 fallback。
 - 使用 synthetic demo data 说明本地生活商品级广告增长决策抽象。
 
 ## 不适用场景

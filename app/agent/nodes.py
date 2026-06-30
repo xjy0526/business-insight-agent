@@ -363,7 +363,7 @@ def _needs_review_analysis(state: AgentState, query: str) -> bool:
         "business_diagnosis",
         "refund_analysis",
         "review_analysis",
-    } or any(term in query for term in ("差评", "评价", "物流", "续航", "佩戴"))
+    } or any(term in query for term in ("差评", "评价", "等待时间", "效果", "服务体验", "预约"))
 
 
 def _needs_campaign_analysis(state: AgentState, query: str) -> bool:
@@ -569,19 +569,19 @@ def _build_rag_query_terms(state: AgentState) -> list[str]:
         if gmv_change.get("absolute_change", 0) < 0:
             retrieval_terms.append("GMV下降 活动 价格竞争力 转化率")
         if ctr_change.get("absolute_change", 0) < 0:
-            retrieval_terms.append("点击率下降 主图 标题 搜索")
+            retrieval_terms.append("点击率下降 项目图 标题 搜索")
         if refund_change.get("absolute_change", 0) > 0:
-            retrieval_terms.append("退款率升高 物流慢 差评 续航 佩戴不舒服")
+            retrieval_terms.append("退款率升高 等待时间长 差评 效果不明显 服务体验")
 
     review_analysis = state.tool_results.get(
         "review_analysis",
         state.tool_results.get("review_topic_analysis", {}),
     )
     top_topics = review_analysis.get("top_topics", [])
-    if "续航不达预期" in top_topics:
-        retrieval_terms.append("续航 描述不符 评价分析 售后")
-    if "物流慢" in top_topics:
-        retrieval_terms.append("物流慢 售后 退款 差评")
+    if "效果不明显" in top_topics:
+        retrieval_terms.append("效果不明显 描述不符 评价分析 售后")
+    if "等待时间长" in top_topics:
+        retrieval_terms.append("等待时间长 预约履约 售后 退款 差评")
 
     campaign_participation = state.tool_results.get(
         "campaign_participation",

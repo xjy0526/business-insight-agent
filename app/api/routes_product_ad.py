@@ -11,6 +11,7 @@ from app.tools.product_ad_tool import (
     rank_ad_candidates,
     recall_query_to_sku,
     recommend_bid_range,
+    simulate_bid_strategy,
     validate_product_ad_data,
 )
 
@@ -41,6 +42,23 @@ def get_product_bid_range(
     """Return CPC range under a target ROI guardrail."""
 
     return _response(recommend_bid_range(product_id, target_roi=target_roi))
+
+
+@router.get("/product/{product_id}/bid-simulation", response_model=ProductAdToolResponse)
+def get_product_bid_simulation(
+    product_id: str,
+    bid_multiplier: float = Query(1.2, gt=0),
+    target_roi: float = Query(3.0, gt=0),
+) -> ProductAdToolResponse:
+    """Return deterministic bid multiplier simulation under target ROI."""
+
+    return _response(
+        simulate_bid_strategy(
+            product_id,
+            bid_multiplier=bid_multiplier,
+            target_roi=target_roi,
+        )
+    )
 
 
 @router.get("/recall", response_model=ProductAdToolResponse)

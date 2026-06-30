@@ -18,7 +18,9 @@ def test_analyze_review_topics_p1001_april() -> None:
     result = analyze_review_topics("P1001", "2026-04-01", "2026-04-30")
 
     assert result["negative_review_count"] > 0
-    assert {"续航不达预期", "物流慢", "佩戴不舒服"}.intersection(result["top_topics"])
+    assert {"效果不明显", "等待时间长", "服务体验不舒服"}.intersection(
+        result["top_topics"]
+    )
     assert result["topic_distribution"]
     assert result["sample_negative_reviews"]
 

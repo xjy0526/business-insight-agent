@@ -16,7 +16,7 @@
     "query": "P1001 4 月退款率为什么异常升高？",
     "expected_intent": "refund_analysis",
     "expected_tools": ["metrics_tool", "rag_tool", "review_tool"],
-    "expected_keywords": ["退款率", "差评", "物流", "优化建议"],
+    "expected_keywords": ["退款率", "差评", "等待时间", "优化建议"],
     "expected_evidence_sources": ["after_sales_policy.md", "review_analysis_guide.md"],
     "expected_entity_ids": ["P1001"],
     "expected_tool_result_keys": ["current_refund", "baseline_refund", "review_analysis", "review_period_comparison"],
@@ -27,7 +27,7 @@
     "query": "P1001 search 渠道点击率下降是什么原因？",
     "expected_intent": "traffic_analysis",
     "expected_tools": ["metrics_tool", "rag_tool", "campaign_tool"],
-    "expected_keywords": ["点击率", "search", "主图", "优化建议"],
+    "expected_keywords": ["点击率", "search", "项目图", "优化建议"],
     "expected_evidence_sources": ["product_operation_guide.md"],
     "expected_entity_ids": ["P1001"],
     "expected_tool_result_keys": ["current_traffic", "current_channel_breakdown", "campaign_participation"],
@@ -55,10 +55,10 @@
   },
   {
     "case_id": "case_006",
-    "query": "P1001 四月差评高频问题有哪些，是否和续航、物流、佩戴体验有关？",
+    "query": "P1001 四月差评高频问题有哪些，是否和效果不明显、等待时间长、服务体验有关？",
     "expected_intent": "review_analysis",
     "expected_tools": ["rag_tool", "review_tool"],
-    "expected_keywords": ["差评", "续航", "物流", "佩戴"],
+    "expected_keywords": ["差评", "效果", "等待时间", "服务体验"],
     "expected_evidence_sources": ["review_analysis_guide.md", "after_sales_policy.md"],
     "expected_entity_ids": ["P1001"],
     "expected_tool_result_keys": ["rag_search", "review_analysis", "review_period_comparison"]
@@ -96,7 +96,7 @@
   },
   {
     "case_id": "case_010",
-    "query": "无线蓝牙耳机 Pro 最近 GMV 下滑和退款率升高是否有关？",
+    "query": "水光补水体验套餐 最近 GMV 下滑和退款率升高是否有关？",
     "expected_intent": "business_diagnosis",
     "expected_tools": ["metrics_tool", "rag_tool", "campaign_tool"],
     "expected_keywords": ["P1001", "GMV", "退款率", "优化建议"],
@@ -193,7 +193,7 @@
     "query": "P1001 四月差评主题和活动参与不足是否共同影响 GMV？",
     "expected_intent": "business_diagnosis",
     "expected_tools": ["metrics_tool", "rag_tool", "review_tool", "campaign_tool"],
-    "expected_keywords": ["差评", "活动参与", "GMV", "物流", "续航"],
+    "expected_keywords": ["差评", "活动参与", "GMV", "等待时间", "效果"],
     "expected_evidence_sources": ["campaign_rules.md", "review_analysis_guide.md"],
     "expected_entity_ids": ["P1001"],
     "expected_tool_result_keys": ["review_analysis", "campaign_participation", "gmv_decomposition"]

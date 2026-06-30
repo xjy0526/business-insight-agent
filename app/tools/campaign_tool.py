@@ -89,12 +89,15 @@ def _infer_participation_status(
             "当前时间范围内未匹配到该类目的活动机会，无法判断活动参与对价格竞争力的影响。",
         )
 
-    april_audio_window = start_date <= "2026-04-18" and end_date >= "2026-04-06"
-    if product_id == "P1001" and category == "音频配件" and april_audio_window:
+    april_beauty_window = start_date <= "2026-04-18" and end_date >= "2026-04-06"
+    if product_id == "P1001" and category == "丽人医美" and april_beauty_window:
         return (
             "insufficient",
             "high",
-            "商品所在类目存在活动机会，但 P1001 未进入主会场且仅低曝光券参与，可能削弱价格竞争力。",
+            (
+                "商品所在类目存在活动机会，但 P1001 未进入丽人医美主会场"
+                "且仅低曝光券参与，可能削弱价格竞争力。"
+            ),
         )
 
     mentioned = any(

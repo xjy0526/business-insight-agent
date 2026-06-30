@@ -21,7 +21,7 @@ def _sources(results: list[dict]) -> set[str]:
 def test_refund_logistics_bad_review_query_hits_policy_or_review_guide() -> None:
     """Refund and bad-review query should hit after-sales or review guidance."""
 
-    results = retrieve_knowledge("退款率升高 物流慢 差评", top_k=5)
+    results = retrieve_knowledge("退款率升高 等待时间长 差评", top_k=5)
 
     assert {"after_sales_policy.md", "review_analysis_guide.md"} & _sources(results)
     assert all("score" in result for result in results)
@@ -38,7 +38,7 @@ def test_campaign_competitiveness_query_hits_campaign_rules() -> None:
 def test_ctr_title_main_image_query_hits_product_operation_guide() -> None:
     """CTR query should hit product operation guidance."""
 
-    results = retrieve_knowledge("点击率下降 主图 标题", top_k=5)
+    results = retrieve_knowledge("点击率下降 项目图 标题", top_k=5)
 
     assert "product_operation_guide.md" in _sources(results)
 
@@ -102,7 +102,7 @@ def test_embedding_backend_falls_back_to_tfidf_without_key(monkeypatch) -> None:
     get_settings.cache_clear()
     retriever._get_vector_store.cache_clear()
 
-    results = retrieve_knowledge("退款率升高 物流慢 差评", top_k=3)
+    results = retrieve_knowledge("退款率升高 等待时间长 差评", top_k=3)
 
     assert results
     assert all(result["rag_backend"] == "tfidf" for result in results)
@@ -121,7 +121,7 @@ def test_retriever_falls_back_to_tfidf_when_backend_fails(monkeypatch) -> None:
     monkeypatch.setattr(retriever, "create_vector_store", lambda backend: BrokenVectorStore())
     retriever._get_vector_store.cache_clear()
 
-    results = retrieve_knowledge("退款率升高 物流慢 差评", top_k=3)
+    results = retrieve_knowledge("退款率升高 等待时间长 差评", top_k=3)
 
     assert results
     assert all({"source", "content", "score"}.issubset(result) for result in results)

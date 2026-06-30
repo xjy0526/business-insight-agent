@@ -28,6 +28,32 @@ def test_product_ad_bid_range_endpoint():
     assert "历史 ROI 低于目标 ROI" in " ".join(payload["result"]["risk_flags"])
 
 
+def test_product_ad_bid_simulation_endpoint():
+    client = TestClient(app)
+    response = client.get(
+        "/api/product-ad/product/P1001/bid-simulation?bid_multiplier=1.2&target_roi=4.5"
+    )
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["ok"] is True
+    assert payload["result"]["product_id"] == "P1001"
+    assert payload["result"]["target_roi"] == 4.5
+    assert payload["result"]["roi_status"] == "risk"
+
+
+def test_product_ad_bid_simulation_not_found_endpoint():
+    client = TestClient(app)
+    response = client.get(
+        "/api/product-ad/product/P9999/bid-simulation?bid_multiplier=1.2&target_roi=4.5"
+    )
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["ok"] is False
+    assert payload["result"]["error"]["code"] == "product_not_found"
+
+
 def test_product_ad_recall_endpoint():
     client = TestClient(app)
     response = client.get("/api/product-ad/recall?query=水光补水&merchant_id=M001")

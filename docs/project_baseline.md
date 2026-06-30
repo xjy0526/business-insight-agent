@@ -11,7 +11,7 @@ BusinessInsight Agent 是一个面向电商经营诊断场景的 AI 应用工程
 - FastAPI 后端与原生前端 Demo，入口包括 `/api/agent/analyze`、`/api/metrics/*`、`/api/traces/*`、`/api/evals/run`。
 - SQLite 模拟电商数据，覆盖商品、订单、流量、评论、活动等表。
 - Metrics Tool：支持 GMV、CTR、CVR、AOV、退款率、渠道拆解，以及 GMV driver 贡献度拆解。
-- Review Tool：基于评论表做负面评论主题分析，当前主题包括物流履约、续航体验、佩戴舒适度、质量/功能稳定性、价格感知。
+- Review Tool：基于评论表做负面评论主题分析，当前主题包括预约履约、服务效果、到店体验、销售体验和描述不符。
 - Campaign Tool：基于商品类目和活动规则分析活动匹配、参与等级和低参与信号。
 - 本地 RAG：读取 `data/knowledge_docs` Markdown，默认 TF-IDF，FAISS/Chroma 为可选后端并自动 fallback。
 - LLMService：默认 mock；配置 OpenAI/Qwen Key 后走 OpenAI-compatible chat completions，失败时回退 mock。

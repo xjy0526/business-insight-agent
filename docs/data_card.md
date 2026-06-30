@@ -1,26 +1,44 @@
 # Data Card
 
-## 数据来源
+## 数据定位
 
-本项目所有商品级广告新增数据均为 synthetic demo data，只用于课程设计、pytest、eval 和本地演示。不包含真实公司数据、真实商户数据、真实用户数据、真实投放策略或敏感信息。
+本项目所有商品级广告新增数据均为 synthetic demo data。
+数据只用于课程设计、pytest、eval、Notebook 和本地演示。
+
+数据不涉及真实平台、真实商户、真实用户或敏感业务信息。
+本仓库为忻纪元课程设计 GitHub 项目提交。
 
 ## 数据表
 
 | 表 | 用途 | 关键字段 |
 | --- | --- | --- |
-| `local_ad_sku_candidates` | 商品级广告主推品候选与增长评分输入 | `merchant_id`, `product_id`, `product_name`, `category`, `service_type`, `price`, `cvr`, `gmv_share`, `pcvr`, `historical_roi`, `margin_rate`, `available_slots`, `rating`, `refund_rate`, `keyword_coverage` |
-| `query_sku_recall` | Query-SKU demo 召回种子 | `query`, `product_id`, `recall_path`, `recall_score`, `matched_terms`, `query_intent` |
-| `ad_bid_experiments` | 合成出价实验与 ROI guardrail 示例 | `experiment_id`, `product_id`, `group_name`, `bid_multiplier`, `cpc`, `impressions`, `clicks`, `orders`, `revenue`, `ad_cost`, `ctr`, `cvr`, `roi` |
-| `poi_level_ads_baseline` | POI 级广告与商品级广告对比基线 | `merchant_id`, `campaign_type`, `impressions`, `clicks`, `orders`, `revenue`, `ad_cost`, `ctr`, `cvr`, `roi`, `notes` |
+| `products` | 经营归因商品/服务项目基础信息 | `product_id`, `product_name`, `category`, `brand`, `price` |
+| `orders` | 订单、GMV、退款率和渠道归因 | `order_id`, `product_id`, `payment_amount`, `refund_flag`, `channel` |
+| `traffic` | 曝光、点击、加购、订单漏斗 | `date`, `product_id`, `channel`, `exposure`, `clicks`, `orders` |
+| `reviews` | 评价主题和差评分析 | `review_id`, `product_id`, `rating`, `content`, `review_date` |
+| `campaigns` | 类目活动机会和活动参与分析 | `campaign_id`, `eligible_category`, `discount_rule` |
+| `local_ad_sku_candidates` | 商品级广告主推品候选与增长评分输入 | `merchant_id`, `product_id`, `cvr`, `gmv_share`, `pcvr`, `historical_roi` |
+| `query_sku_recall` | Query-SKU 召回解释 | `query`, `product_id`, `recall_path`, `recall_score`, `matched_terms` |
+| `ad_bid_experiments` | 合成出价实验与 ROI guardrail 示例 | `product_id`, `bid_multiplier`, `cpc`, `roi`, `group_name` |
+| `poi_level_ads_baseline` | POI 级广告与商品级广告对比基线 | `merchant_id`, `campaign_type`, `ctr`, `cvr`, `roi` |
 
-## 字段含义
+## P1001 语义
 
-- `merchant_id` / `poi_id` / `product_id`：合成商户、门店和商品标识。
-- `cvr`、`pcvr`、`ctr`、`roi`：课程演示用转化、预估转化、点击和投入产出指标。
-- `gmv_share`：商品在合成商户 GMV 中的占比。
-- `margin_rate`：用于利润 ROI 约束的合成毛利率。
-- `refund_rate`、`rating`、`available_slots`：履约与承接风险信号。
-- `recall_path`、`recall_score`、`matched_terms`：Query-SKU 召回解释字段。
+P1001 在经营归因和商品广告模块中统一表示：
+
+```text
+水光补水体验套餐
+```
+
+P1001 不再表示其他非本地生活商品。
+
+## 生成与约束
+
+数据以可复现 CSV 形式存放在 `data/` 下。
+`python -m app.db.init_db` 会将 CSV 重新导入 SQLite。
+
+商品级广告字段用于 deterministic scorer、ROI guardrail、Query-SKU 召回和
+课程 Notebook 展示。评分权重用于课程方法验证，不能直接用于生产投放。
 
 ## 局限性
 

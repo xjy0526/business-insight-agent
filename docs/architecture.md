@@ -164,7 +164,7 @@ Review Tool 查询 `reviews` 表，统计：
 - `topic_distribution`
 - `sample_negative_reviews`
 
-主题使用规则关键词识别，例如“续航不达预期”“物流慢”“佩戴不舒服”“质量问题”“描述不符”。这样能稳定输出可测试结果，避免把评论事实完全交给 LLM。
+主题使用规则关键词识别，例如“效果不达预期”“等待时间慢”“服务体验不舒服”“质量问题”“描述不符”。这样能稳定输出可测试结果，避免把评论事实完全交给 LLM。
 
 ### Campaign Tool
 
@@ -177,7 +177,7 @@ Campaign Tool 查询 `products` 和 `campaigns`，按商品类目匹配活动机
 - `risk_level`
 - `risk_reason`
 
-在当前 seed 数据中，P1001 四月音频类目活动参与不足，风险等级为 high，用于解释价格竞争力、点击率和转化承接压力。
+在当前 seed 数据中，P1001 四月丽人医美类目活动参与不足，风险等级为 high，用于解释价格竞争力、点击率和转化承接压力。
 
 ### SQL Tool
 

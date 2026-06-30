@@ -341,6 +341,11 @@ def _build_ablation_delta(modes: dict[str, dict[str, Any]]) -> dict[str, dict[st
                 metrics.get("avg_score", 0.0) - full_metrics.get("avg_score", 0.0),
                 6,
             ),
+            "reflection_quality_delta": round(
+                metrics.get("avg_reflection_quality", 0.0)
+                - full_metrics.get("avg_reflection_quality", 0.0),
+                6,
+            ),
             "evidence_hit_rate_delta": round(
                 metrics.get("evidence_hit_rate", 0.0)
                 - full_metrics.get("evidence_hit_rate", 0.0),
@@ -375,6 +380,8 @@ def build_eval_summary(
         "full_agent_avg_score": full_score,
         "pass": True if fail_under is None else full_score >= fail_under,
     }
+    ablation_delta = _build_ablation_delta(modes)
+    no_reflection_delta = ablation_delta.get("no_reflection_vs_full", {})
     return {
         "generated_at": _now_iso(),
         "generated_command": generated_command,
@@ -382,7 +389,15 @@ def build_eval_summary(
         "modes_count": len(modes),
         "full_agent_gate": full_result.get("gate", {}),
         "modes": modes,
-        "ablation_delta": _build_ablation_delta(modes),
+        "ablation_delta": ablation_delta,
+        "reflection_quality_delta": no_reflection_delta.get("reflection_quality_delta", 0.0),
+        "no_reflection_vs_full": {
+            "avg_score_delta": no_reflection_delta.get("avg_score_delta", 0.0),
+            "reflection_quality_delta": no_reflection_delta.get(
+                "reflection_quality_delta",
+                0.0,
+            ),
+        },
         "threshold_check": threshold_check,
     }
 

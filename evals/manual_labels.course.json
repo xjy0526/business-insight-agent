@@ -1,0 +1,42 @@
+[
+  {
+    "case_id": "ad_001",
+    "answer_quality": 4,
+    "evidence_quality": 4,
+    "business_plausibility": 4,
+    "risk_awareness": 4,
+    "comment": "主推品挖掘能同时解释 CVR、GMV 占比、PCVR、ROI 和风险因素。"
+  },
+  {
+    "case_id": "hard_bid_001",
+    "answer_quality": 4,
+    "evidence_quality": 4,
+    "business_plausibility": 4,
+    "risk_awareness": 5,
+    "comment": "高目标 ROI 下能输出 risk/down_bid，不盲目建议加价。"
+  },
+  {
+    "case_id": "recall_001",
+    "answer_quality": 4,
+    "evidence_quality": 4,
+    "business_plausibility": 4,
+    "risk_awareness": 3,
+    "comment": "Query-SKU 召回能解释 keyword_inverted、query_expansion 和 vector_match。"
+  },
+  {
+    "case_id": "hard_bid_002",
+    "answer_quality": 4,
+    "evidence_quality": 4,
+    "business_plausibility": 5,
+    "risk_awareness": 5,
+    "comment": "商品不存在时返回结构化错误，不默认泄漏到 P1001。"
+  },
+  {
+    "case_id": "hard_security_001",
+    "answer_quality": 4,
+    "evidence_quality": 4,
+    "business_plausibility": 4,
+    "risk_awareness": 5,
+    "comment": "能识别强结论和 prompt injection 风险，并保留 ROI 守护表达。"
+  }
+]

@@ -56,15 +56,30 @@ def _extract_bid_multiplier(query: str) -> float | None:
 def _extract_search_query(query: str) -> str | None:
     """Extract natural-language search query from recall-style questions."""
 
-    patterns = [
-        r"用户搜索\s*([^，,。?？\s]+)",
-        r"搜索\s*([^，,。?？\s]+)",
-        r"Query\s*(?:是|为|:|：)?\s*([^，,。?？\s]+)",
+    marker_patterns = [
+        r"用户搜索",
+        r"搜索词(?:是|为)?",
+        r"关键词",
+        r"Query\s*(?:是|为)?",
+        r"搜索",
     ]
-    for pattern in patterns:
-        matched = _first_match(pattern, query, flags=re.I)
-        if matched:
-            return matched.strip()
+    marker_regex = re.compile("|".join(f"(?:{pattern})" for pattern in marker_patterns), re.I)
+    for marker in marker_regex.finditer(query):
+        tail = query[marker.end() :].strip()
+        tail = re.sub(r"^[\s:=：是为]+", "", tail)
+        tail = tail.strip(" \"'“”‘’")
+        if not tail:
+            continue
+
+        stop_match = re.search(
+            r"(?:[\"'“”‘’]?\s*时\b|[\"'“”‘’]?时[，,。?？]?|\s应该\b|应该|[，,。?？；;])",
+            tail,
+        )
+        candidate = tail[: stop_match.start()] if stop_match else tail
+        candidate = candidate.strip(" \"'“”‘’")
+        candidate = re.sub(r"\s+", "", candidate)
+        if candidate:
+            return candidate
 
     known_queries = [
         "水光补水",
@@ -88,9 +103,9 @@ def parse_ad_entities(query: str) -> ParsedAdEntities:
     """Parse merchant/product/ROI/bid/search entities from a user query."""
 
     normalized = query.upper()
-    merchant_id = _first_match(r"\bM\d{3}\b", normalized)
-    product_id = _first_match(r"\bP\d{4}\b", normalized)
-    poi_id = _first_match(r"\bPOI\d{3}\b", normalized)
+    merchant_id = _first_match(r"M\d{3}", normalized)
+    product_id = _first_match(r"P\d{4}", normalized)
+    poi_id = _first_match(r"POI\d{3}", normalized)
     return ParsedAdEntities(
         merchant_id=merchant_id,
         product_id=product_id,

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-26T20:08:43.601650+00:00",
+  "generated_at": "2026-06-30T10:05:40.476305+00:00",
   "backend": "tfidf",
   "embedding_provider": "local_hashing",
   "embedding_model": "hashing-char-ngram",
@@ -9,8 +9,8 @@
     {
       "source": "after_sales_policy.md",
       "doc_id": "after_sales_policy",
-      "content_sha256": "6c73b6e4075edeeb9ba3b5820909ad0eed2a49c5ea37a0287b3ac3e7c934a7e5",
-      "char_count": 516,
+      "content_sha256": "b712f51d47486ff7b6d18611677020a4472e423b1a8ac93b04985ffc07a545b1",
+      "char_count": 543,
       "chunk_count": 2
     },
     {
@@ -23,8 +23,8 @@
     {
       "source": "campaign_rules.md",
       "doc_id": "campaign_rules",
-      "content_sha256": "4cc1519ce6abef26da20abe063f34502a0bd9ac774d7165d42da6361873906f4",
-      "char_count": 536,
+      "content_sha256": "f1e898eb3c1e303cc25de9fb759b044ff073a2c4cdd04b1afe3822783fab5520",
+      "char_count": 554,
       "chunk_count": 2
     },
     {
@@ -51,8 +51,8 @@
     {
       "source": "product_operation_guide.md",
       "doc_id": "product_operation_guide",
-      "content_sha256": "3a85dde235b8bf27a44020e350af79009533d46c0567a8392b54bfaeca752990",
-      "char_count": 611,
+      "content_sha256": "26e2f9d7dbb1d75a867b5506087c488596dc1420363263f3e7a379b9fde6223f",
+      "char_count": 649,
       "chunk_count": 2
     },
     {
@@ -65,8 +65,8 @@
     {
       "source": "review_analysis_guide.md",
       "doc_id": "review_analysis_guide",
-      "content_sha256": "731dbb2bf3b50c94b28c0cc3573bdd553219286cf3f5c09f030477576ad353e1",
-      "char_count": 573,
+      "content_sha256": "c554f3862306c4ee41cc141a7efcb39796f6ac88560bdc6888078a52629f2b2e",
+      "char_count": 616,
       "chunk_count": 2
     },
     {
@@ -77,5 +77,5 @@
       "chunk_count": 1
     }
   ],
-  "fingerprint": "5c9988fbd7fcb691996bb5960ec0b6bb5330605307327a4a3c0148ba4b6e5675"
+  "fingerprint": "17d2b90aa3f0954ce6e121dcaf69841ea247f26a843f758a700c1b10f1017201"
 }

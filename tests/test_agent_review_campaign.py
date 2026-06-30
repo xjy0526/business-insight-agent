@@ -29,7 +29,7 @@ def test_review_query_final_answer_contains_top_topics() -> None:
     result = run_agent("商品 P1001 差评集中在哪些问题？")
 
     assert "review_analysis" in result["tool_results"]
-    expected_topics = ("续航不达预期", "物流慢", "佩戴不舒服")
+    expected_topics = ("效果不明显", "等待时间长", "服务体验不舒服")
     assert any(topic in result["final_answer"] for topic in expected_topics)
 
 

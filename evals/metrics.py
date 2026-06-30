@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 from typing import Any
 
 PRODUCT_AD_INTENTS = {
@@ -437,19 +438,20 @@ def check_no_default_entity_leakage(
     agent_result: dict[str, Any],
     eval_case: dict[str, Any],
 ) -> float:
-    """Penalize strong default P1001/M001 recommendations when no entity was provided."""
+    """Penalize strong default product/merchant IDs when no entity was provided."""
 
     query = eval_case.get("query", "")
-    has_explicit_entity = any(
-        marker in query.upper() for marker in ("P1001", "P9999", "M001", "M999")
-    )
+    if eval_case.get("expected_intent") == "sku_recall":
+        return 1.0
+
+    has_explicit_entity = bool(re.search(r"(?:P\d{4}|M\d{3}|POI\d{3})", query.upper()))
     if has_explicit_entity:
         return 1.0
 
     answer = _answer_text(agent_result)
-    if any(term in answer for term in ("需要补充", "问题不明确", "无法排序")):
+    if any(term in answer for term in ("需要补充", "问题不明确", "无法排序", "商户ID", "商品ID")):
         return 1.0
-    leaked = any(entity in answer for entity in ("P1001", "M001"))
+    leaked = bool(re.search(r"(?:P\d{4}|M\d{3})", answer))
     return 0.0 if leaked else 1.0
 
 
@@ -509,21 +511,23 @@ def calculate_case_score(agent_result: dict[str, Any], eval_case: dict[str, Any]
     no_default_entity_leakage = check_no_default_entity_leakage(agent_result, eval_case)
     hard_case_uncertainty = check_hard_case_uncertainty(agent_result, eval_case)
     score = (
-        intent_accuracy * 0.15
-        + keyword_coverage * 0.09
-        + tool_usage * 0.10
+        intent_accuracy * 0.13
+        + keyword_coverage * 0.05
+        + tool_usage * 0.11
         + evidence_hit * 0.08
         + entity_coverage * 0.06
-        + tool_result_key_coverage * 0.07
-        + ad_recommendation_fields * 0.08
-        + bid_guardrail * 0.08
-        + sku_recall_fields * 0.07
+        + tool_result_key_coverage * 0.06
+        + ad_recommendation_fields * 0.07
+        + bid_guardrail * 0.07
+        + sku_recall_fields * 0.06
         + poi_vs_product_comparison * 0.03
         + claim_evidence_alignment * 0.05
-        + numeric_bid_correctness * 0.07
+        + numeric_bid_correctness * 0.06
         + no_default_entity_leakage * 0.04
         + hard_case_uncertainty * 0.04
         + forbidden_keyword_pass * 0.04
+        + reflection_quality * 0.03
+        + security_flag * 0.02
     )
 
     capped_score = min(max(score, 0.0), 1.0)

@@ -21,7 +21,7 @@ CLAIM_TYPE_RULES = {
     "gmv": ["GMV", "成交", "订单"],
     "traffic": ["点击率", "CTR", "search", "搜索"],
     "conversion": ["转化率", "CVR"],
-    "after_sales": ["退款", "售后", "差评", "物流", "续航", "佩戴"],
+    "after_sales": ["退款", "售后", "差评", "等待时间", "效果", "服务体验", "预约"],
     "campaign": ["活动", "满减", "价格竞争力", "优惠"],
 }
 CLAIM_TYPE_EVIDENCE = {

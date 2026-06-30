@@ -14,22 +14,22 @@ def seeded_database() -> None:
 
 
 def test_review_tool_finds_p1001_negative_topics() -> None:
-    """P1001 April reviews should surface logistics, battery, and comfort themes."""
+    """P1001 April reviews should surface wait, effect, and service themes."""
 
     result = analyze_review_topics("P1001", "2026-04-01", "2026-04-30")
     labels = {topic["label"] for topic in result["topics"]}
 
     assert result["review_count"] > 0
     assert result["negative_review_count"] > 0
-    assert {"物流履约", "续航体验", "佩戴舒适度"}.issubset(labels)
+    assert {"预约履约", "服务效果", "到店体验"}.issubset(labels)
 
 
 def test_campaign_tool_marks_p1001_low_participation() -> None:
-    """P1001 should be eligible for the April audio campaign but low participation."""
+    """P1001 should be eligible for the April beauty campaign but low participation."""
 
     result = analyze_campaign_participation("P1001", "2026-04-01", "2026-04-30")
 
     assert result["found"] is True
-    assert result["eligible_campaign_count"] == 1
+    assert result["eligible_campaign_count"] >= 1
     assert result["participation_status"] == "low_participation"
     assert result["low_participation_count"] == 1

@@ -21,7 +21,7 @@ def _sample_chunks() -> list[dict[str, str]]:
         {
             "chunk_id": "chunk_refund",
             "source": "after_sales_policy.md",
-            "content": "退款率升高通常需要排查物流慢、质量问题和描述不符。",
+            "content": "退款率升高通常需要排查等待时间长、服务体验和描述不符。",
         },
     ]
 
@@ -90,7 +90,7 @@ def test_chroma_vector_store_backend_if_installed() -> None:
     pytest.importorskip("chromadb", reason="chromadb is optional")
 
     store = ChromaVectorStore().build_index(_sample_chunks())
-    results = store.search("退款率升高 物流慢", top_k=1)
+    results = store.search("退款率升高 等待时间长", top_k=1)
 
     assert results
     assert results[0]["source"] == "after_sales_policy.md"

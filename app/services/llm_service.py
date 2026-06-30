@@ -543,7 +543,7 @@ class LLMService:
             "## 证据来源\n"
             "证据应来自 metrics_tool 的计算结果和 RAG 知识库检索结果。\n\n"
             "## 优化建议\n"
-            "建议围绕活动参与、价格竞争力、主图标题、物流履约、详情页承诺和售后策略逐项优化。"
+            "建议围绕活动参与、价格竞争力、项目图标题、预约履约、详情页承诺和售后策略逐项优化。"
         )
 
     def _extract_user_query(self, prompt: str) -> str:
