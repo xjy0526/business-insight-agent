@@ -1,4 +1,4 @@
-"""Run product-ad course ablation modes for BusinessInsight Agent."""
+"""Run product-ad ablation modes for BusinessInsight Agent."""
 
 from __future__ import annotations
 
@@ -67,7 +67,7 @@ def _compact_metrics(result: dict[str, Any]) -> dict[str, Any]:
 
 
 def run_ablation(cases_path: str | Path = DEFAULT_CASES_PATH) -> dict[str, Any]:
-    """Run all course ablation modes and return a JSON-serializable report."""
+    """Run all ablation modes and return a JSON-serializable report."""
 
     mode_results: dict[str, dict[str, Any]] = {}
     full_config = ABLATION_MODES["full_product_ad_agent"]

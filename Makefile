@@ -1,4 +1,4 @@
-.PHONY: setup init-db test lint eval ablation notebook validate-data course-check
+.PHONY: setup init-db test lint eval ablation notebook validate-data full-check
 
 PYTHON ?= python
 
@@ -27,4 +27,4 @@ notebook:
 validate-data:
 	$(PYTHON) scripts/validate_demo_data.py
 
-course-check: init-db validate-data test lint eval ablation notebook
+full-check: init-db validate-data test lint eval ablation notebook

@@ -2,7 +2,7 @@
 
 ## 默认模式
 
-项目默认使用 `LLM_PROVIDER=mock`，课程 demo、pytest、eval、notebook 和 CI 都不依赖外部 API。核心事实来自 SQLite 工具、Product Ad Tool 和本地 RAG，因此没有 API key 时仍能完整运行。
+项目默认使用 `LLM_PROVIDER=mock`，demo、pytest、eval、notebook 和 CI 都不依赖外部 API。核心事实来自 SQLite 工具、Product Ad Tool 和本地 RAG，因此没有 API key 时仍能完整运行。
 
 ## 可选接入
 

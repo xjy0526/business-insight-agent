@@ -217,7 +217,7 @@ class ReportService:
             f"3. 针对退款率升高，排查预约等待、效果承诺、护理体验和服务流程，"
             f"必要时调整详情页承诺并优化到店履约。\n"
             f"4. 持续监控 GMV、点击率、转化率、退款率和差评主题，按周验证优化动作是否有效。"
-            f"{self._build_business_course_addendum(state)}"
+            f"{self._build_business_addendum(state)}"
         )
 
     def build_product_ad_report(self, state: AgentState) -> str:
@@ -476,7 +476,7 @@ class ReportService:
             f"{row_lines or '- 暂无对比数据。'}\n\n"
             f"## 结论\n"
             f"{insight_lines or '- 商品级广告更适合高意向Query和明确服务需求。'}\n"
-            f"- 课程口径结论：商品级广告更适合高意向Query和明确服务需求。\n"
+            f"- 项目口径结论：商品级广告更适合高意向Query和明确服务需求。\n"
             f"- 商品级广告相比 POI级广告更依赖商品数据治理、供给稳定和 ROI 守护。\n\n"
             f"{self._build_evidence_alignment_table(state)}"
             f"## 证据来源\n"
@@ -484,8 +484,8 @@ class ReportService:
             f"- RAG 文档：{evidence_source_text}。"
         )
 
-    def _build_business_course_addendum(self, state: AgentState) -> str:
-        """Append course-version attribution and product-ad impact sections."""
+    def _build_business_addendum(self, state: AgentState) -> str:
+        """Append attribution and product-ad impact sections."""
 
         root_causes = state.recommendation_result.get("root_causes", [])
         if not root_causes:

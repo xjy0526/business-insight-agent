@@ -11,10 +11,10 @@
 - 证据解释是否适合老师阅读。
 - 报告是否避免不必要的强结论。
 
-课程人工评审样例见：
+人工评审样例见：
 
 ```text
-evals/manual_labels.course.json
+evals/manual_labels.product_ad.json
 ```
 
-该文件不参与 CI 分数，只作为课程报告和说明材料。
+该文件不参与 CI 分数，只作为项目报告和说明材料。

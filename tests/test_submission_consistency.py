@@ -1,4 +1,4 @@
-"""Regression checks for course submission product semantics."""
+"""Regression checks for product semantics."""
 
 from __future__ import annotations
 
@@ -19,13 +19,13 @@ ELECTRONICS_TERMS = (
     "佩戴不舒服",
 )
 
-COURSE_CORE_FILES = (
+CORE_SUBMISSION_FILES = (
     "data/products.csv",
     "data/reviews.csv",
     "data/campaigns.csv",
-    "README_COURSE.md",
-    "docs/course_report.md",
-    "notebooks/course_design_demo.ipynb",
+    "PRODUCT_AD_METHOD.md",
+    "docs/project_report.md",
+    "notebooks/product_ad_demo.ipynb",
 )
 
 LOCAL_SERVICE_NAME_MARKERS = ("水光补水", "补水体验")
@@ -54,10 +54,10 @@ def test_p1001_is_consistent_local_service() -> None:
         assert not any(term in joined_values for term in ELECTRONICS_TERMS)
 
 
-def test_no_electronics_terms_in_course_core_files() -> None:
-    """Course-facing files should stay in the local-life service scenario."""
+def test_no_electronics_terms_in_core_files() -> None:
+    """Core files should stay in the local-life service scenario."""
 
-    for relative_path in COURSE_CORE_FILES:
+    for relative_path in CORE_SUBMISSION_FILES:
         content = (PROJECT_ROOT / relative_path).read_text(encoding="utf-8")
         assert not any(term in content for term in ELECTRONICS_TERMS), relative_path
 
@@ -65,7 +65,7 @@ def test_no_electronics_terms_in_course_core_files() -> None:
 def test_notebook_has_no_local_absolute_path() -> None:
     """Committed notebook output should not leak local absolute paths."""
 
-    content = (PROJECT_ROOT / "notebooks/course_design_demo.ipynb").read_text(
+    content = (PROJECT_ROOT / "notebooks/product_ad_demo.ipynb").read_text(
         encoding="utf-8"
     )
     blocked_path_fragments = (

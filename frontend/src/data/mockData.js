@@ -220,7 +220,7 @@ export const poiProductCompareRows = [
 ];
 
 export const productAdTrace = {
-  trace_id: "trace_course_product_ad_demo",
+  trace_id: "trace_product_ad_demo",
   tool_results: {
     product_ad: {
       score_version: "product_ad_score_v2",

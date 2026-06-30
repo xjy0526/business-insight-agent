@@ -2,7 +2,7 @@
 
 基于 Tool Calling 与 RAG 的主推品挖掘、Query-SKU 召回与 ROI 守护。
 
-## 1. 课程设计题目
+## 1. 项目题目
 
 中文题目：
 
@@ -14,8 +14,7 @@
 Product-level Advertising Growth Agent for Local Commerce Merchants:
 Tool-augmented RAG for SKU Mining, Query-SKU Recall and ROI Guardrails.
 
-本仓库为忻纪元课程设计 GitHub 项目提交。
-项目基于公开可运行的 `business-insight-agent` 代码框架进行课程场景扩展。
+项目基于公开可运行的 `business-insight-agent` 代码框架进行本地生活广告场景扩展。
 所有新增数据均为 synthetic demo data，不涉及真实平台、真实商户、
 真实用户或敏感业务信息。
 
@@ -62,8 +61,8 @@ ROI 风险提示、证据对齐表和结构化投放建议报告。
 | CTR、CVR、订单、ROI 实验评估 | `ad_bid_experiments`, `poi_level_ads_baseline` |
 | 工程化评测与可观测性 | `evals/`, `TraceService`, ablation suite |
 
-本项目是对本地生活商品级广告场景中通用方法的课程抽象实现，
-仅用于课程展示、方法验证和工程练习。
+本项目是对本地生活商品级广告场景中通用方法的抽象实现，
+用于方法验证和工程练习。
 
 ## 6. 方法框架
 
@@ -186,10 +185,10 @@ python -m evals.run_ablation
 python scripts/execute_notebook.py
 ```
 
-也可以运行课程检查：
+也可以运行完整检查：
 
 ```bash
-make course-check
+make full-check
 ```
 
 ## 12. GitHub 提交说明
@@ -199,10 +198,9 @@ Notebook 可通过以下命令执行并保存输出：
 python scripts/execute_notebook.py
 ```
 
-最终课程报告正文见 [docs/course_report_final.md](docs/course_report_final.md)。
+最终项目报告正文见 [docs/final_report.md](docs/final_report.md)。
 
-本仓库为忻纪元课程设计 GitHub 项目提交。
 项目新增商品级广告增长决策、主推品挖掘、Query-SKU 召回、
-ROI 出价守护、广告投放评测、课程 Notebook 和报告正文。
+ROI 出价守护、广告投放评测、Notebook 和报告正文。
 所有数据均为 synthetic demo data，不涉及真实平台、真实商户、
 真实用户或敏感业务信息。

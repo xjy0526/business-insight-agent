@@ -1,4 +1,4 @@
-"""Smoke checks for committed course notebook outputs."""
+"""Smoke checks for committed notebook outputs."""
 
 from __future__ import annotations
 
@@ -6,10 +6,10 @@ import json
 from pathlib import Path
 
 
-def test_course_notebook_has_saved_execution_output() -> None:
+def test_notebook_has_saved_execution_output() -> None:
     """Notebook should be committed with at least one executed code output."""
 
-    notebook_path = Path("notebooks/course_design_demo.ipynb")
+    notebook_path = Path("notebooks/product_ad_demo.ipynb")
     assert notebook_path.exists()
 
     notebook = json.loads(notebook_path.read_text(encoding="utf-8"))

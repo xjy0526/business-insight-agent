@@ -2,8 +2,8 @@
 
 ## 系统类型
 
-BusinessInsight Agent 的课程版本不是端到端大模型自动决策系统。
-它是 Tool Calling + RAG + deterministic scorer + report generation 的课程设计系统。
+BusinessInsight Agent 不是端到端大模型自动决策系统。
+它是 Tool Calling + RAG + deterministic scorer + report generation 的工程演示系统。
 
 关键数字由 SQLite 工具计算，包括 GMV、CTR、CVR、退款率、
 Product Growth Score、Query-SKU recall score、CPC 上限和 ROI guardrail。
@@ -32,7 +32,7 @@ Reflection Checker 主要用于 trace/evidence repair/safety audit。
 
 ## 适用场景
 
-- 课程设计、GitHub 项目展示、工程方案讲解。
+- GitHub 项目展示、工程方案讲解。
 - 演示 Agentic workflow、Tool Calling、RAG、Eval、Trace、Ablation 和 fallback。
 - 使用 synthetic demo data 说明本地生活商品级广告增长决策抽象。
 
@@ -47,5 +47,5 @@ Reflection Checker 主要用于 trace/evidence repair/safety audit。
 - 数据为 synthetic demo data，规模和分布均被简化。
 - 实体解析、Query 解析和关键词评测是规则化实现，可能漏召回或误判模糊问题。
 - Eval 使用关键词、结构字段和数值一致性检查，不能完全替代人工业务评审。
-- 无真实线上 A/B 实验，ROI 结论只能作为课程演示中的 guardrail 示例。
+- 无真实线上 A/B 实验，ROI 结论只能作为工程演示中的 guardrail 示例。
 - 可选真实 LLM 只用于 phrasing，不应生成或修改工具事实。

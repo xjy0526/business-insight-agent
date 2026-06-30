@@ -93,7 +93,7 @@ export default function ProductAds() {
 
         <Card
           className="p-6"
-          subtitle="Comparison uses synthetic baselines for course demonstration."
+          subtitle="Comparison uses synthetic baselines for demonstration."
           title="POI vs 商品级广告"
         >
           <div className="mt-5">
@@ -113,7 +113,7 @@ export default function ProductAds() {
 
       <Card
         className="p-6"
-        subtitle="Trace JSON keeps tool evidence visible for course review and debugging."
+        subtitle="Trace JSON keeps tool evidence visible for project review and debugging."
         title="JSON Trace"
       >
         <details className="mt-5 rounded-lg border border-line bg-slate-50 p-4">

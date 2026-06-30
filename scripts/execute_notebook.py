@@ -1,4 +1,4 @@
-"""Execute and persist the course-design demo notebook."""
+"""Execute and persist the demo notebook."""
 
 from __future__ import annotations
 
@@ -14,7 +14,7 @@ from nbclient.exceptions import CellExecutionError
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_NOTEBOOK = PROJECT_ROOT / "notebooks" / "course_design_demo.ipynb"
+DEFAULT_NOTEBOOK = PROJECT_ROOT / "notebooks" / "product_ad_demo.ipynb"
 
 
 def _has_executed_output(notebook: dict[str, Any]) -> bool:
@@ -85,7 +85,7 @@ def smoke_check(notebook_path: Path) -> int:
 def main() -> int:
     """CLI entrypoint."""
 
-    parser = argparse.ArgumentParser(description="Execute the course demo notebook.")
+    parser = argparse.ArgumentParser(description="Execute the demo notebook.")
     parser.add_argument(
         "--notebook",
         default=str(DEFAULT_NOTEBOOK),

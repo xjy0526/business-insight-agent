@@ -1,13 +1,11 @@
-# 课程报告摘要版
+# 项目报告摘要版
 
 本文设计并实现了一个面向本地生活商户的商品级广告增长决策 Agent。
 系统基于 Tool Calling 与 RAG，将经营归因、主推品挖掘、Query-SKU 召回、
 ROI 出价守护和证据约束型报告生成整合在同一条可观测工作流中。
 
 项目使用 synthetic demo data，不涉及真实平台、真实商户、真实用户或敏感业务信息。
-本仓库为忻纪元课程设计 GitHub 项目提交。
-
-完整课程报告正文见 [course_report_final.md](course_report_final.md)。
+完整项目报告正文见 [final_report.md](final_report.md)。
 
 ## 问题建模
 

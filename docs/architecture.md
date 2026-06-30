@@ -122,7 +122,7 @@ LangGraph runtime 还会在 `tool_results.langgraph_runtime` 中输出：
 
 - `checkpoint`：`none` 或 `memory`，`memory` 会尝试使用 LangGraph `MemorySaver`。
 - `logical_subgraphs`：工具选择子图、反思修复子图等逻辑分组。
-- `visual_trace_edges`：用于前端或课程展示的条件边元数据。
+- `visual_trace_edges`：用于前端或项目展示的条件边元数据。
 
 ## 4. 工具层
 

@@ -3,11 +3,9 @@
 ## 数据定位
 
 本项目所有商品级广告新增数据均为 synthetic demo data。
-数据只用于课程设计、pytest、eval、Notebook 和本地演示。
+数据只用于 pytest、eval、Notebook 和本地演示。
 
 数据不涉及真实平台、真实商户、真实用户或敏感业务信息。
-本仓库为忻纪元课程设计 GitHub 项目提交。
-
 ## 数据表
 
 | 表 | 用途 | 关键字段 |
@@ -38,11 +36,11 @@ P1001 不再表示其他非本地生活商品。
 `python -m app.db.init_db` 会将 CSV 重新导入 SQLite。
 
 商品级广告字段用于 deterministic scorer、ROI guardrail、Query-SKU 召回和
-课程 Notebook 展示。评分权重用于课程方法验证，不能直接用于生产投放。
+Notebook 展示。评分权重用于方法验证，不能直接用于生产投放。
 
 ## 局限性
 
 - 数据规模小，分布简单，不代表实际线上分布。
 - Query-SKU 召回只覆盖少量本地生活服务词。
 - 出价实验是 deterministic synthetic table，不代表线上真实 A/B 实验。
-- 评分权重用于课程展示，不能直接用于生产投放。
+- 评分权重用于工程演示，不能直接用于生产投放。
