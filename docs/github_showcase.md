@@ -2,7 +2,7 @@
 
 这个仓库适合作为 AI 应用工程项目展示，重点不是“能聊天”，而是把 Agent、RAG、Tool Calling、Trace、Eval、Fallback 串成可运行、可验证、可讲解的闭环。
 
-## 推荐展示顺序
+## 展示顺序
 
 1. 打开 README 的架构图，说明用户问题如何进入条件图。
 2. 运行 `python -m app.db.init_db`，强调所有指标来自可复现 SQLite 数据。
@@ -12,7 +12,7 @@
 6. 运行 `python -m evals.run_eval --all-modes --fail-under 0.70`，展示 eval case 和阈值门禁。
 7. 运行 `python -m evals.run_eval --all-modes`，说明 RAG、Metrics、Review/Campaign、Reflection 和 mock/fallback 的组件贡献。
 
-## 答辩时可以强调的亮点
+## 强调亮点
 
 - 指标数字不由 LLM 生成，而由确定性工具计算。
 - RAG 只作为业务证据，不替代指标事实。

@@ -32,7 +32,7 @@ Tool-augmented RAG for SKU Mining, Query-SKU Recall and ROI Guardrails.
 - 用什么 Query 召回。
 - 出价是否守住 ROI。
 
-本项目将这些问题抽象为一个可观测、可回测、可答辩的
+本项目将这些问题抽象为一个可观测、可回测、可说明的
 Agentic Product Ads Decision System。
 
 ## 3. 问题定义
@@ -157,13 +157,13 @@ P1001 在经营归因和商品级广告模块中均表示：
 
 ## 10. 实验设计
 
-Baseline：原经营归因 Agent，只使用指标工具、RAG 和模板报告。
+Baseline：经营归因 Agent，只使用指标工具、RAG 和模板报告。
 
 Ablation：比较 `llm_or_template_only`、`metrics_only`、
 `product_ad_tools_only`、`rag_plus_metrics`、`full_product_ad_agent`
 五种模式。
 
-Eval cases：保留原经营归因评测，并新增商品级广告、主推品挖掘、
+Eval cases：基于经营归因评测，新增商品级广告、主推品挖掘、
 出价守护、Query-SKU 召回、POI vs Product Ad 对比、prompt injection
 和模糊问题 hard cases。
 
@@ -193,8 +193,6 @@ make course-check
 ```
 
 ## 12. GitHub 提交说明
-
-课程提交时应提交 Notebook、课程报告和 GitHub 链接。
 Notebook 可通过以下命令执行并保存输出：
 
 ```bash

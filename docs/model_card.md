@@ -32,7 +32,7 @@ Reflection Checker 主要用于 trace/evidence repair/safety audit。
 
 ## 适用场景
 
-- 课程设计答辩、GitHub 项目展示、工程方案讲解。
+- 课程设计、GitHub 项目展示、工程方案讲解。
 - 演示 Agentic workflow、Tool Calling、RAG、Eval、Trace、Ablation 和 fallback。
 - 使用 synthetic demo data 说明本地生活商品级广告增长决策抽象。
 

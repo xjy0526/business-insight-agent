@@ -28,7 +28,3 @@ export LLM_BASE_URL="https://dashscope.aliyuncs.com/compatible-mode/v1"
 - LLM 输出必须遵守 Pydantic/JSON schema 校验和敏感输出过滤。
 - LLM 不得改写 `pcvr`、`price`、`target_roi`、`max_cpc`、`roi_status` 等工具字段。
 - 调用失败、缺少 API key 或超时时自动 fallback 到 mock，不影响 deterministic demo。
-
-## 课程评测为何不依赖外部 API
-
-课程验收关注工程闭环：Tool Calling、RAG、Trace、Eval、Ablation、Notebook 输出和文档一致性。外部 LLM 会引入网络、费用、随机性和配额风险，因此默认关闭，保证每次运行可复现。
