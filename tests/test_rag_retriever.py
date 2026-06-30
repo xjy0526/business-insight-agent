@@ -18,7 +18,7 @@ def _sources(results: list[dict]) -> set[str]:
     return {result["source"] for result in results}
 
 
-def test_refund_logistics_bad_review_query_hits_policy_or_review_guide() -> None:
+def test_refund_service_bad_review_query_hits_policy_or_review_guide() -> None:
     """Refund and bad-review query should hit after-sales or review guidance."""
 
     results = retrieve_knowledge("退款率升高 等待时间长 差评", top_k=5)

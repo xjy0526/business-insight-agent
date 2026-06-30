@@ -240,7 +240,7 @@ Golden answer 与人工标注：
 python -m evals.run_eval --all-modes --fail-under 0.70
 ```
 
-最新结果：44 cases，`full_agent avg_score=0.974587`，threshold gate `0.70` 通过，生成时间 `2026-06-30T10:05:34.980905+00:00`。
+最新结果：44 cases，`full_agent avg_score=0.974587`，threshold gate `0.70` 通过，生成时间 `2026-06-30T11:12:27.500932+00:00`。
 
 | Mode | Avg Score | Evidence Hit Rate | Reflection Quality | 说明 |
 | --- | ---: | ---: | ---: | --- |

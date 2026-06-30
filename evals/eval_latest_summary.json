@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-30T10:05:34.980905+00:00",
+  "generated_at": "2026-06-30T11:12:27.500932+00:00",
   "generated_command": "python -m evals.run_eval --all-modes --fail-under 0.70",
   "case_count": 44,
   "modes_count": 6,
@@ -34,7 +34,7 @@
       "avg_reflection_quality": 0.485606,
       "security_flag_pass_rate": 0.977273,
       "avg_golden_answer_coverage": 1.0,
-      "avg_latency_ms": 3.5,
+      "avg_latency_ms": 3.55,
       "p95_latency_ms": 8
     },
     "no_rag": {
@@ -52,7 +52,7 @@
       "avg_reflection_quality": 0.480303,
       "security_flag_pass_rate": 0.977273,
       "avg_golden_answer_coverage": 1.0,
-      "avg_latency_ms": 2.82,
+      "avg_latency_ms": 2.89,
       "p95_latency_ms": 7
     },
     "no_review_campaign": {
@@ -70,7 +70,7 @@
       "avg_reflection_quality": 0.481061,
       "security_flag_pass_rate": 0.977273,
       "avg_golden_answer_coverage": 1.0,
-      "avg_latency_ms": 2.7,
+      "avg_latency_ms": 2.8,
       "p95_latency_ms": 6
     },
     "no_reflection": {
@@ -88,11 +88,11 @@
       "avg_reflection_quality": 0.2,
       "security_flag_pass_rate": 0.977273,
       "avg_golden_answer_coverage": 1.0,
-      "avg_latency_ms": 3.05,
-      "p95_latency_ms": 8
+      "avg_latency_ms": 3.2,
+      "p95_latency_ms": 7
     },
     "no_metrics_tool": {
-      "avg_score": 0.89939,
+      "avg_score": 0.899674,
       "intent_accuracy": 0.977273,
       "evidence_hit_rate": 0.977273,
       "avg_tool_result_key_coverage": 0.67803,
@@ -106,11 +106,11 @@
       "avg_reflection_quality": 0.2,
       "security_flag_pass_rate": 0.977273,
       "avg_golden_answer_coverage": 1.0,
-      "avg_latency_ms": 0.61,
+      "avg_latency_ms": 0.64,
       "p95_latency_ms": 1
     },
     "mock_only": {
-      "avg_score": 0.839828,
+      "avg_score": 0.840112,
       "intent_accuracy": 0.977273,
       "evidence_hit_rate": 0.590909,
       "avg_tool_result_key_coverage": 0.67803,
@@ -133,31 +133,31 @@
       "avg_score_delta": -0.035869,
       "reflection_quality_delta": -0.005303,
       "evidence_hit_rate_delta": -0.409091,
-      "avg_latency_ms_delta": -0.68
+      "avg_latency_ms_delta": -0.66
     },
     "no_review_campaign_vs_full": {
       "avg_score_delta": -0.016382,
       "reflection_quality_delta": -0.004545,
       "evidence_hit_rate_delta": 0.0,
-      "avg_latency_ms_delta": -0.8
+      "avg_latency_ms_delta": -0.75
     },
     "no_reflection_vs_full": {
       "avg_score_delta": -0.008852,
       "reflection_quality_delta": -0.285606,
       "evidence_hit_rate_delta": 0.0,
-      "avg_latency_ms_delta": -0.45
+      "avg_latency_ms_delta": -0.35
     },
     "no_metrics_tool_vs_full": {
-      "avg_score_delta": -0.075197,
+      "avg_score_delta": -0.074913,
       "reflection_quality_delta": -0.285606,
       "evidence_hit_rate_delta": -0.022727,
-      "avg_latency_ms_delta": -2.89
+      "avg_latency_ms_delta": -2.91
     },
     "mock_only_vs_full": {
-      "avg_score_delta": -0.134759,
+      "avg_score_delta": -0.134475,
       "reflection_quality_delta": -0.285606,
       "evidence_hit_rate_delta": -0.409091,
-      "avg_latency_ms_delta": -3.5
+      "avg_latency_ms_delta": -3.55
     }
   },
   "reflection_quality_delta": -0.285606,

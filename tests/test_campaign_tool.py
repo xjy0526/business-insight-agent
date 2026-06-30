@@ -13,7 +13,7 @@ def seeded_database() -> None:
 
 
 def test_check_campaign_participation_p1001_april() -> None:
-    """P1001 should show insufficient participation in the April audio campaign."""
+    """P1001 should show insufficient participation in the April beauty campaign."""
 
     result = check_campaign_participation("P1001", "2026-04-01", "2026-04-30")
 
