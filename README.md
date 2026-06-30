@@ -387,7 +387,7 @@ business-insight-agent/
 └── requirements.txt
 ```
 
-## 答辩讲解要点
+## 项目要点
 
 - 这是一个电商经营归因 Agent，不是聊天 Demo；核心链路是业务问题 -> 工具计算 -> RAG 证据 -> 证据校验 -> Trace/Eval。
 - GMV、CTR、CVR、AOV、退款率、差评率、活动参与状态都来自确定性工具，LLM 不负责生成关键数字。
